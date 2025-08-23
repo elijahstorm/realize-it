@@ -25,7 +25,7 @@ export default function Home() {
 
         const reader = res.body.getReader()
         const decoder = new TextDecoder()
-        let botMsg = { role: 'assistant' as const, content: '' }
+        const botMsg = { role: 'assistant' as const, content: '' }
         setMessages((prev) => [...prev, botMsg])
 
         while (true) {
