@@ -193,7 +193,7 @@ export default function Page({ params }: PageProps) {
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <Link
-                            href={`/${lang}/(marketing)/help`}
+                            href={`/${lang}//help`}
                             className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground rounded-full border px-3 py-1.5 text-sm"
                         >
                             Help
@@ -603,7 +603,7 @@ export default function Page({ params }: PageProps) {
                                 <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
                                     <li>
                                         <Link
-                                            href={`/${lang}/(marketing)/help`}
+                                            href={`/${lang}//help`}
                                             className="hover:text-foreground underline underline-offset-2"
                                         >
                                             How AI designs work
@@ -611,7 +611,7 @@ export default function Page({ params }: PageProps) {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`/${lang}/(marketing)/contact`}
+                                            href={`/${lang}//contact`}
                                             className="hover:text-foreground underline underline-offset-2"
                                         >
                                             Contact us
@@ -619,7 +619,7 @@ export default function Page({ params }: PageProps) {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`/${lang}/(marketing)/legal/ip-policy`}
+                                            href={`/${lang}//legal/ip-policy`}
                                             className="hover:text-foreground underline underline-offset-2"
                                         >
                                             IP & content policy
@@ -633,7 +633,7 @@ export default function Page({ params }: PageProps) {
                                     {!authUserId ? (
                                         <li>
                                             <Link
-                                                href={`/${lang}/(auth)/sign-in`}
+                                                href={`/${lang}/sign-in`}
                                                 className="hover:text-foreground underline underline-offset-2"
                                             >
                                                 Sign in to save progress
@@ -671,20 +671,17 @@ export default function Page({ params }: PageProps) {
                         <div className="mt-10">
                             <Separator />
                             <div className="text-muted-foreground mt-6 grid grid-cols-2 gap-4 text-xs md:grid-cols-6">
-                                <Link
-                                    href={`/${lang}/(marketing)/about`}
-                                    className="hover:text-foreground"
-                                >
+                                <Link href={`/${lang}//about`} className="hover:text-foreground">
                                     About
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/terms`}
+                                    href={`/${lang}//legal/terms`}
                                     className="hover:text-foreground"
                                 >
                                     Terms
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/privacy`}
+                                    href={`/${lang}//legal/privacy`}
                                     className="hover:text-foreground"
                                 >
                                     Privacy

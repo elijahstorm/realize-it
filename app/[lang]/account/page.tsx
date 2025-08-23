@@ -134,7 +134,7 @@ export default function AccountPage() {
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!user) {
-            router.push(`/${lang}/(auth)/sign-in`)
+            router.push(`/${lang}/sign-in`)
             return
         }
         setSaving(true)
@@ -179,7 +179,7 @@ export default function AccountPage() {
 
     const handleSignOut = async () => {
         await supabase.auth.signOut()
-        router.push(`/${lang}/(auth)/sign-in`)
+        router.push(`/${lang}/sign-in`)
     }
 
     const handleTrackingSubmit = (e: React.FormEvent) => {
@@ -223,13 +223,13 @@ export default function AccountPage() {
                         </p>
                         <div className="flex items-center justify-center gap-2">
                             <Link
-                                href={`/${lang}/(auth)/sign-in`}
+                                href={`/${lang}/sign-in`}
                                 className="bg-primary text-primary-foreground inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow hover:opacity-95"
                             >
                                 Sign in
                             </Link>
                             <Link
-                                href={`/${lang}/(auth)/sign-up`}
+                                href={`/${lang}/sign-up`}
                                 className="border-input bg-background hover:bg-muted inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium shadow-sm"
                             >
                                 Create account
@@ -295,38 +295,38 @@ export default function AccountPage() {
                                     </Link>
                                     <Separator className="my-2" />
                                     <Link
-                                        href={`/${lang}/(marketing)/help`}
+                                        href={`/${lang}//help`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Help center
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/about`}
+                                        href={`/${lang}//about`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         About
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/contact`}
+                                        href={`/${lang}//contact`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Contact
                                     </Link>
                                     <Separator className="my-2" />
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/terms`}
+                                        href={`/${lang}//legal/terms`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Terms
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/privacy`}
+                                        href={`/${lang}//legal/privacy`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Privacy
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/ip-policy`}
+                                        href={`/${lang}//legal/ip-policy`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         IP policy
@@ -639,7 +639,7 @@ export default function AccountPage() {
                                         </p>
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/help`}
+                                        href={`/${lang}//help`}
                                         className="bg-background hover:bg-muted rounded-md border p-4 shadow-sm transition"
                                     >
                                         <div className="text-sm font-medium">Get help</div>
@@ -648,7 +648,7 @@ export default function AccountPage() {
                                         </p>
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/about`}
+                                        href={`/${lang}//about`}
                                         className="bg-background hover:bg-muted rounded-md border p-4 shadow-sm transition"
                                     >
                                         <div className="text-sm font-medium">About RealizeIt</div>

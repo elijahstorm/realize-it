@@ -454,14 +454,14 @@ export default function HelpPage() {
                         <>
                             {''}계정을 만들거나 로그인하려면{' '}
                             <Link
-                                href={l('/(auth)/sign-in').replace('/(auth)', '')}
+                                href={l('/sign-in').replace('', '')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 로그인
                             </Link>{' '}
                             또는{' '}
                             <Link
-                                href={l('/(auth)/sign-up').replace('/(auth)', '')}
+                                href={l('/sign-up').replace('', '')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 가입하기
@@ -479,14 +479,14 @@ export default function HelpPage() {
                         <>
                             To sign in or create an account, visit{' '}
                             <Link
-                                href={l('/(auth)/sign-in').replace('/(auth)', '')}
+                                href={l('/sign-in').replace('', '')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 Sign in
                             </Link>{' '}
                             or{' '}
                             <Link
-                                href={l('/(auth)/sign-up').replace('/(auth)', '')}
+                                href={l('/sign-up').replace('', '')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 Sign up

@@ -297,9 +297,9 @@ export default function AdminDashboardPage() {
         { href: `/${lang}/design`, label: 'New Design' },
         { href: `/${lang}/orders`, label: 'My Orders' },
         { href: `/${lang}/account`, label: 'Account' },
-        { href: `/${lang}/(marketing)/about`, label: 'About' },
-        { href: `/${lang}/(marketing)/help`, label: 'Help' },
-        { href: `/${lang}/(marketing)/legal/terms`, label: 'Terms' },
+        { href: `/${lang}//about`, label: 'About' },
+        { href: `/${lang}//help`, label: 'Help' },
+        { href: `/${lang}//legal/terms`, label: 'Terms' },
     ]
 
     return (
@@ -367,7 +367,7 @@ export default function AdminDashboardPage() {
                                     <span>
                                         Please{' '}
                                         <Link
-                                            href={`/${lang}/(auth)/sign-in`}
+                                            href={`/${lang}/sign-in`}
                                             className="hover:text-primary underline underline-offset-4"
                                         >
                                             sign in
@@ -631,28 +631,16 @@ export default function AdminDashboardPage() {
                 <footer className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div>RealizeIt Admin • POC</div>
                     <div className="flex gap-3">
-                        <Link
-                            href={`/${lang}/(marketing)/legal/privacy`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
                             Privacy
                         </Link>
-                        <Link
-                            href={`/${lang}/(marketing)/legal/terms`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
                             Terms
                         </Link>
-                        <Link
-                            href={`/${lang}/(marketing)/legal/ip-policy`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/ip-policy`} className="hover:text-foreground">
                             IP Policy
                         </Link>
-                        <Link
-                            href={`/${lang}/(marketing)/contact`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//contact`} className="hover:text-foreground">
                             Contact
                         </Link>
                     </div>

@@ -57,7 +57,7 @@ export default function SignUpPage() {
         async (provider: 'google' | 'github') => {
             setErrorMsg(null)
             try {
-                const redirectTo = `${window.location.origin}/${lang}/(auth)/callback`
+                const redirectTo = `${window.location.origin}/${lang}/callback`
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider,
                     options: {
@@ -102,7 +102,7 @@ export default function SignUpPage() {
 
             setSubmitting(true)
             try {
-                const emailRedirectTo = `${window.location.origin}/${lang}/(auth)/callback`
+                const emailRedirectTo = `${window.location.origin}/${lang}/callback`
                 const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
@@ -188,19 +188,19 @@ export default function SignUpPage() {
                     </Link>
                     <nav className="hidden gap-6 text-sm md:flex">
                         <Link
-                            href={`/${lang}/(marketing)/about`}
+                            href={`/${lang}//about`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             About
                         </Link>
                         <Link
-                            href={`/${lang}/(marketing)/help`}
+                            href={`/${lang}//help`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             Help
                         </Link>
                         <Link
-                            href={`/${lang}/(marketing)/contact`}
+                            href={`/${lang}//contact`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             Contact
@@ -437,21 +437,21 @@ export default function SignUpPage() {
                                     <span className="text-muted-foreground text-sm">
                                         I agree to the{' '}
                                         <Link
-                                            href={`/${lang}/(marketing)/legal/terms`}
+                                            href={`/${lang}//legal/terms`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             Terms
                                         </Link>
                                         ,{' '}
                                         <Link
-                                            href={`/${lang}/(marketing)/legal/privacy`}
+                                            href={`/${lang}//legal/privacy`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             Privacy Policy
                                         </Link>
                                         , and{' '}
                                         <Link
-                                            href={`/${lang}/(marketing)/legal/ip-policy`}
+                                            href={`/${lang}//legal/ip-policy`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             IP Policy
@@ -546,7 +546,7 @@ export default function SignUpPage() {
                             <div className="text-center text-sm">
                                 Already have an account?{' '}
                                 <Link
-                                    href={`/${lang}/(auth)/sign-in`}
+                                    href={`/${lang}/sign-in`}
                                     className="text-foreground hover:text-primary underline underline-offset-2"
                                 >
                                     Sign in
@@ -585,10 +585,7 @@ export default function SignUpPage() {
                             <Link href={`/${lang}/admin`} className="hover:text-foreground">
                                 Admin
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/help`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//help`} className="hover:text-foreground">
                                 Support
                             </Link>
                         </div>
@@ -708,14 +705,14 @@ export default function SignUpPage() {
                             <div className="text-muted-foreground text-xs">
                                 Need help? Visit our{' '}
                                 <Link
-                                    href={`/${lang}/(marketing)/help`}
+                                    href={`/${lang}//help`}
                                     className="text-foreground hover:text-primary underline underline-offset-2"
                                 >
                                     Help Center
                                 </Link>{' '}
                                 or{' '}
                                 <Link
-                                    href={`/${lang}/(marketing)/contact`}
+                                    href={`/${lang}//contact`}
                                     className="text-foreground hover:text-primary underline underline-offset-2"
                                 >
                                     Contact us
@@ -730,24 +727,15 @@ export default function SignUpPage() {
             <footer className="border-border/60 bg-background/80 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur">
                 <div className="text-muted-foreground mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs sm:flex-row">
                     <div className="flex items-center gap-3">
-                        <Link
-                            href={`/${lang}/(marketing)/legal/terms`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
                             Terms
                         </Link>
                         <span>•</span>
-                        <Link
-                            href={`/${lang}/(marketing)/legal/privacy`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
                             Privacy
                         </Link>
                         <span>•</span>
-                        <Link
-                            href={`/${lang}/(marketing)/legal/ip-policy`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//legal/ip-policy`} className="hover:text-foreground">
                             IP Policy
                         </Link>
                     </div>

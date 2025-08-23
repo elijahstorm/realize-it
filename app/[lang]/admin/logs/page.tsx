@@ -484,7 +484,7 @@ export default function AdminLogsPage() {
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Admin Access Required</h1>
                     <Link
-                        href={`/${lang}/(auth)/sign-in`}
+                        href={`/${lang}/sign-in`}
                         className="bg-primary text-primary-foreground rounded-md px-3 py-2 hover:opacity-90"
                     >
                         Sign in
@@ -496,10 +496,10 @@ export default function AdminLogsPage() {
                         You don&apos;t have permission to view logs. If you believe this is an
                         error, contact support on the Help page.
                         <div className="mt-2 flex gap-3">
-                            <Link href={`/${lang}/(marketing)/help`} className="underline">
+                            <Link href={`/${lang}//help`} className="underline">
                                 Help
                             </Link>
-                            <Link href={`/${lang}/(marketing)/contact`} className="underline">
+                            <Link href={`/${lang}//contact`} className="underline">
                                 Contact
                             </Link>
                         </div>

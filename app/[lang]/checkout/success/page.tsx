@@ -396,7 +396,7 @@ export default function CheckoutSuccessPage({ params }: PageProps) {
                                 {t.browseProducts}
                             </Link>
                             <Link
-                                href={baseLink('/(marketing)/help')}
+                                href={baseLink('//help')}
                                 className="border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-xs font-medium shadow-sm"
                             >
                                 {t.needHelp}
@@ -410,37 +410,37 @@ export default function CheckoutSuccessPage({ params }: PageProps) {
                             <p className="text-muted-foreground text-sm">{t.helpDescription}</p>
                             <div className="mt-3 flex flex-wrap gap-2">
                                 <Link
-                                    href={baseLink('/(marketing)/about')}
+                                    href={baseLink('//about')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     About
                                 </Link>
                                 <Link
-                                    href={baseLink('/(marketing)/help')}
+                                    href={baseLink('//help')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     Help Center
                                 </Link>
                                 <Link
-                                    href={baseLink('/(marketing)/contact')}
+                                    href={baseLink('//contact')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     Contact
                                 </Link>
                                 <Link
-                                    href={baseLink('/(marketing)/legal/terms')}
+                                    href={baseLink('//legal/terms')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     Terms
                                 </Link>
                                 <Link
-                                    href={baseLink('/(marketing)/legal/privacy')}
+                                    href={baseLink('//legal/privacy')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     Privacy
                                 </Link>
                                 <Link
-                                    href={baseLink('/(marketing)/legal/ip-policy')}
+                                    href={baseLink('//legal/ip-policy')}
                                     className="text-primary text-xs hover:underline"
                                 >
                                     IP Policy

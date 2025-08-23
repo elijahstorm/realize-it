@@ -192,7 +192,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             Account
                         </Link>
                         <Link
-                            href={`/${lang}/(marketing)/help`}
+                            href={`/${lang}//help`}
                             className="text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 text-sm"
                         >
                             Help
@@ -287,26 +287,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             <Link href={`/${lang}/products`} className="hover:text-foreground">
                                 Browse products
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/about`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//about`} className="hover:text-foreground">
                                 About
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/contact`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//contact`} className="hover:text-foreground">
                                 Contact
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/legal/terms`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
                                 Terms
                             </Link>
                             <Link
-                                href={`/${lang}/(marketing)/legal/privacy`}
+                                href={`/${lang}//legal/privacy`}
                                 className="hover:text-foreground"
                             >
                                 Privacy
@@ -336,7 +327,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <Link href={`/${lang}/account/settings`} className="hover:text-foreground">
                             Settings
                         </Link>
-                        <Link href={`/${lang}/(marketing)/help`} className="hover:text-foreground">
+                        <Link href={`/${lang}//help`} className="hover:text-foreground">
                             Help Center
                         </Link>
                         <Link href={`/${lang}/admin/analytics`} className="hover:text-foreground">

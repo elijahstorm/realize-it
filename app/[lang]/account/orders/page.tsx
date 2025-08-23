@@ -243,7 +243,7 @@ export default function OrdersPage() {
                 Settings
             </Link>
             <span className="text-border">|</span>
-            <Link href={`/${lang}/(marketing)/help`} className="hover:text-foreground">
+            <Link href={`/${lang}//help`} className="hover:text-foreground">
                 Help
             </Link>
             <span className="text-border">|</span>
@@ -265,13 +265,13 @@ export default function OrdersPage() {
                         if you don&apos;t have one.
                         <div className="mt-4 flex gap-2">
                             <Link
-                                href={`/${lang}/(auth)/sign-in`}
+                                href={`/${lang}/sign-in`}
                                 className="bg-primary text-primary-foreground inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:opacity-90"
                             >
                                 Sign In
                             </Link>
                             <Link
-                                href={`/${lang}/(auth)/sign-up`}
+                                href={`/${lang}/sign-up`}
                                 className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium"
                             >
                                 Create Account
@@ -393,10 +393,7 @@ export default function OrdersPage() {
                                             >
                                                 Explore products
                                             </Link>
-                                            <Link
-                                                href={`/${lang}/(marketing)/help`}
-                                                className="underline"
-                                            >
+                                            <Link href={`/${lang}//help`} className="underline">
                                                 Need help?
                                             </Link>
                                         </div>
@@ -551,25 +548,19 @@ export default function OrdersPage() {
                         Cart
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}/(marketing)/about`} className="hover:text-foreground">
+                    <Link href={`/${lang}//about`} className="hover:text-foreground">
                         About
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}/(marketing)/contact`} className="hover:text-foreground">
+                    <Link href={`/${lang}//contact`} className="hover:text-foreground">
                         Contact
                     </Link>
                     <span className="text-border">|</span>
-                    <Link
-                        href={`/${lang}/(marketing)/legal/terms`}
-                        className="hover:text-foreground"
-                    >
+                    <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
                         Terms
                     </Link>
                     <span className="text-border">|</span>
-                    <Link
-                        href={`/${lang}/(marketing)/legal/privacy`}
-                        className="hover:text-foreground"
-                    >
+                    <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
                         Privacy
                     </Link>
                 </div>

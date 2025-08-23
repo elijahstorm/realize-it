@@ -110,7 +110,7 @@ export default function OAuthCallbackPage() {
                                 If this takes too long, you can return to
                                 <span className="mx-1" />
                                 <Link
-                                    href={buildPath('(auth)/sign-in')}
+                                    href={buildPath('sign-in')}
                                     className="text-primary underline underline-offset-4"
                                 >
                                     sign in
@@ -200,7 +200,7 @@ export default function OAuthCallbackPage() {
                             </Alert>
                             <div className="mt-2 flex w-full flex-col gap-2 sm:flex-row">
                                 <Link
-                                    href={buildPath('(auth)/sign-in')}
+                                    href={buildPath('sign-in')}
                                     className="bg-primary text-primary-foreground focus-visible:ring-ring inline-flex flex-1 items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:opacity-90 focus:outline-none focus-visible:ring-2"
                                 >
                                     Back to Sign In
@@ -215,37 +215,37 @@ export default function OAuthCallbackPage() {
                             <div className="bg-border my-2 h-px w-full" />
                             <nav className="grid grid-cols-2 gap-2 text-sm">
                                 <Link
-                                    href={buildPath('(marketing)/help')}
+                                    href={buildPath('/help')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     Help
                                 </Link>
                                 <Link
-                                    href={buildPath('(marketing)/contact')}
+                                    href={buildPath('/contact')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     Contact
                                 </Link>
                                 <Link
-                                    href={buildPath('(marketing)/about')}
+                                    href={buildPath('/about')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     About
                                 </Link>
                                 <Link
-                                    href={buildPath('(marketing)/legal/privacy')}
+                                    href={buildPath('/legal/privacy')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     Privacy
                                 </Link>
                                 <Link
-                                    href={buildPath('(auth)/sign-up')}
+                                    href={buildPath('sign-up')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     Create Account
                                 </Link>
                                 <Link
-                                    href={buildPath('(auth)/forgot-password')}
+                                    href={buildPath('forgot-password')}
                                     className="text-muted-foreground hover:text-foreground underline underline-offset-4"
                                 >
                                     Forgot Password

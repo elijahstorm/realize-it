@@ -125,14 +125,14 @@ export default function BillingPage() {
                         <AlertDescription>
                             Please
                             <Link
-                                href={`/${lang}/(auth)/sign-in`}
+                                href={`/${lang}/sign-in`}
                                 className="mx-1 underline underline-offset-4"
                             >
                                 sign in
                             </Link>
                             to view your billing information. New here? {''}
                             <Link
-                                href={`/${lang}/(auth)/sign-up`}
+                                href={`/${lang}/sign-up`}
                                 className="ml-1 underline underline-offset-4"
                             >
                                 Create an account
@@ -362,7 +362,7 @@ export default function BillingPage() {
                                 <li>
                                     <Link
                                         className="text-primary hover:text-primary/80 underline underline-offset-4"
-                                        href={`/${lang}/(marketing)/help`}
+                                        href={`/${lang}//help`}
                                     >
                                         Billing & payments FAQ
                                     </Link>
@@ -370,7 +370,7 @@ export default function BillingPage() {
                                 <li>
                                     <Link
                                         className="text-primary hover:text-primary/80 underline underline-offset-4"
-                                        href={`/${lang}/(marketing)/contact`}
+                                        href={`/${lang}//contact`}
                                     >
                                         Contact support
                                     </Link>
@@ -380,7 +380,7 @@ export default function BillingPage() {
                             <div className="text-muted-foreground space-y-1 text-xs">
                                 <div>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/terms`}
+                                        href={`/${lang}//legal/terms`}
                                         className="underline underline-offset-4"
                                     >
                                         Terms of Service
@@ -388,7 +388,7 @@ export default function BillingPage() {
                                 </div>
                                 <div>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/privacy`}
+                                        href={`/${lang}//legal/privacy`}
                                         className="underline underline-offset-4"
                                     >
                                         Privacy Policy
@@ -396,7 +396,7 @@ export default function BillingPage() {
                                 </div>
                                 <div>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/ip-policy`}
+                                        href={`/${lang}//legal/ip-policy`}
                                         className="underline underline-offset-4"
                                     >
                                         IP Policy

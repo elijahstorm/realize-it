@@ -67,7 +67,7 @@ export default function VerifyEmailPage() {
         try {
             setIsSending(true)
             const supabase = supabaseBrowser
-            const redirectTo = `${window.location.origin}/${lang}/(auth)/callback`
+            const redirectTo = `${window.location.origin}/${lang}/callback`
             const { error } = await supabase.auth.resend({
                 type: 'signup',
                 email: targetEmail,
@@ -189,21 +189,21 @@ export default function VerifyEmailPage() {
                         <div className="grid gap-4">
                             <div className="flex flex-wrap items-center justify-between gap-2">
                                 <Link
-                                    href={`/${lang}/(auth)/sign-in`}
+                                    href={`/${lang}/sign-in`}
                                     className="text-primary text-sm hover:underline"
                                 >
                                     Back to sign in
                                 </Link>
                                 <div className="flex items-center gap-3 text-sm">
                                     <Link
-                                        href={`/${lang}/(marketing)/help`}
+                                        href={`/${lang}//help`}
                                         className="text-muted-foreground hover:text-foreground hover:underline"
                                     >
                                         Help
                                     </Link>
                                     <span className="text-muted-foreground">•</span>
                                     <Link
-                                        href={`/${lang}/(marketing)/contact`}
+                                        href={`/${lang}//contact`}
                                         className="text-muted-foreground hover:text-foreground hover:underline"
                                     >
                                         Contact
@@ -272,7 +272,7 @@ export default function VerifyEmailPage() {
                                         </p>
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/about`}
+                                        href={`/${lang}//about`}
                                         className="group border-border hover:border-primary/40 hover:bg-accent rounded-md border p-3 text-sm"
                                     >
                                         <span className="group-hover:text-foreground font-medium">
@@ -286,22 +286,16 @@ export default function VerifyEmailPage() {
                             </div>
 
                             <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-xs">
-                                <Link
-                                    href={`/${lang}/(marketing)/legal/terms`}
-                                    className="hover:underline"
-                                >
+                                <Link href={`/${lang}//legal/terms`} className="hover:underline">
                                     Terms
                                 </Link>
                                 <span>•</span>
-                                <Link
-                                    href={`/${lang}/(marketing)/legal/privacy`}
-                                    className="hover:underline"
-                                >
+                                <Link href={`/${lang}//legal/privacy`} className="hover:underline">
                                     Privacy
                                 </Link>
                                 <span>•</span>
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/ip-policy`}
+                                    href={`/${lang}//legal/ip-policy`}
                                     className="hover:underline"
                                 >
                                     IP Policy
@@ -314,10 +308,7 @@ export default function VerifyEmailPage() {
                 <div className="text-muted-foreground mt-6 text-center text-xs">
                     <p>
                         Already verified?{' '}
-                        <Link
-                            href={`/${lang}/(auth)/sign-in`}
-                            className="text-primary hover:underline"
-                        >
+                        <Link href={`/${lang}/sign-in`} className="text-primary hover:underline">
                             Continue to sign in
                         </Link>
                     </p>

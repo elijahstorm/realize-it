@@ -173,7 +173,7 @@ export default function Loading() {
                                 {link(`/${lang}/products`, 'Browse products')}
                                 {link(`/${lang}/orders`, 'Your orders')}
                                 {link(`/${lang}/account`, 'Account', { subtle: true })}
-                                {link(`/${lang}/(marketing)/help`, 'Help', { subtle: true })}
+                                {link(`/${lang}//help`, 'Help', { subtle: true })}
                             </div>
                         </div>
                     </div>
@@ -220,17 +220,17 @@ export default function Loading() {
                             {link(`/${lang}/orders`, 'Orders')}
                             {link(`/${lang}/account/orders`, 'Order history', { subtle: true })}
                             {link(`/${lang}/account`, 'Account', { subtle: true })}
-                            {link(`/${lang}/(marketing)/about`, 'About', { subtle: true })}
-                            {link(`/${lang}/(marketing)/help`, 'Help Center', { subtle: true })}
-                            {link(`/${lang}/(marketing)/legal/terms`, 'Terms', { subtle: true })}
-                            {link(`/${lang}/(marketing)/legal/privacy`, 'Privacy', {
+                            {link(`/${lang}//about`, 'About', { subtle: true })}
+                            {link(`/${lang}//help`, 'Help Center', { subtle: true })}
+                            {link(`/${lang}//legal/terms`, 'Terms', { subtle: true })}
+                            {link(`/${lang}//legal/privacy`, 'Privacy', {
                                 subtle: true,
                             })}
-                            {link(`/${lang}/(marketing)/legal/ip-policy`, 'IP Policy', {
+                            {link(`/${lang}//legal/ip-policy`, 'IP Policy', {
                                 subtle: true,
                             })}
-                            {link(`/${lang}/(auth)/sign-in`, 'Sign in', { subtle: true })}
-                            {link(`/${lang}/(auth)/sign-up`, 'Create account', { subtle: true })}
+                            {link(`/${lang}/sign-in`, 'Sign in', { subtle: true })}
+                            {link(`/${lang}/sign-up`, 'Create account', { subtle: true })}
                             {link(`/offline`, 'Offline support', { subtle: true })}
                             {link(`/${lang}/admin`, 'Admin', { subtle: true })}
                             {link(`/${lang}/admin/analytics`, 'Analytics', { subtle: true })}

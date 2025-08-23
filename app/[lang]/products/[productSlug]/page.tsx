@@ -306,13 +306,13 @@ function ProductNotFound({ lang }: { lang: string }) {
                     Browse all products
                 </Link>
                 <Link
-                    href={`/${lang}/(marketing)/help`}
+                    href={`/${lang}//help`}
                     className="border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-4 py-2 transition"
                 >
                     Help center
                 </Link>
                 <Link
-                    href={`/${lang}/(marketing)/contact`}
+                    href={`/${lang}//contact`}
                     className="border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-4 py-2 transition"
                 >
                     Contact us
@@ -477,7 +477,7 @@ export default function ProductDetailPage() {
                             This POC enforces AI‑generated artwork only—no manual uploads. You’ll
                             approve a design before checkout. Learn more in our{' '}
                             <Link
-                                href={`/${lang}/(marketing)/help`}
+                                href={`/${lang}//help`}
                                 className="hover:text-foreground underline underline-offset-2"
                             >
                                 Help Center
@@ -589,7 +589,7 @@ export default function ProductDetailPage() {
                             <div className="text-muted-foreground mt-3 text-xs">
                                 Need help choosing? See our{' '}
                                 <Link
-                                    href={`/${lang}/(marketing)/help/sizing`}
+                                    href={`/${lang}//help/sizing`}
                                     className="hover:text-foreground underline underline-offset-2"
                                 >
                                     full sizing guide

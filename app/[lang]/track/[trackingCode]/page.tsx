@@ -572,25 +572,19 @@ export default function Page({
                                     Orders in account
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/terms`.replace(
-                                        '/(marketing)',
-                                        ''
-                                    )}
+                                    href={`/${lang}//legal/terms`.replace('/', '')}
                                     className="border-border bg-background hover:bg-muted rounded-md border px-3 py-2 text-sm"
                                 >
                                     Terms
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/privacy`.replace(
-                                        '/(marketing)',
-                                        ''
-                                    )}
+                                    href={`/${lang}//legal/privacy`.replace('/', '')}
                                     className="border-border bg-background hover:bg-muted rounded-md border px-3 py-2 text-sm"
                                 >
                                     Privacy
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/about`.replace('/(marketing)', '')}
+                                    href={`/${lang}//about`.replace('/', '')}
                                     className="border-border bg-background hover:bg-muted rounded-md border px-3 py-2 text-sm"
                                 >
                                     About

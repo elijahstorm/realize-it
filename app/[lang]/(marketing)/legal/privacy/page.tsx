@@ -80,7 +80,7 @@ export default function PrivacyPolicyPage() {
                         <li className="text-border">/</li>
                         <li>
                             <Link
-                                href={to('/(marketing)/help')}
+                                href={to('//help')}
                                 className="hover:text-foreground hover:underline"
                             >
                                 Help
@@ -109,7 +109,7 @@ export default function PrivacyPolicyPage() {
                             <span> </span>
                             <Link
                                 className="text-primary underline underline-offset-4"
-                                href={to('/(marketing)/contact')}
+                                href={to('//contact')}
                             >
                                 Support
                             </Link>
@@ -232,7 +232,7 @@ export default function PrivacyPolicyPage() {
                             By using RealizeIt, you agree to this Privacy Policy and our
                             <span> </span>
                             <Link
-                                href={to('/(marketing)/legal/terms')}
+                                href={to('//legal/terms')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 Terms of Service
@@ -347,7 +347,7 @@ export default function PrivacyPolicyPage() {
                             For more on terms and order handling, see our
                             <span> </span>
                             <Link
-                                href={to('/(marketing)/legal/terms')}
+                                href={to('//legal/terms')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 Terms of Service
@@ -356,7 +356,7 @@ export default function PrivacyPolicyPage() {
                             and
                             <span> </span>
                             <Link
-                                href={to('/(marketing)/legal/ip-policy')}
+                                href={to('//legal/ip-policy')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 IP Policy
@@ -379,7 +379,7 @@ export default function PrivacyPolicyPage() {
                             our
                             <span> </span>
                             <Link
-                                href={to('/(marketing)/legal/ip-policy')}
+                                href={to('//legal/ip-policy')}
                                 className="text-primary underline underline-offset-4"
                             >
                                 IP Policy
@@ -491,7 +491,7 @@ export default function PrivacyPolicyPage() {
                                 Manage privacy in Settings
                             </Link>
                             <Link
-                                href={to('/(auth)/sign-in')}
+                                href={to('/sign-in')}
                                 className="border-input bg-background text-foreground hover:bg-muted inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium shadow-sm transition"
                             >
                                 Sign in to your account
@@ -546,13 +546,13 @@ export default function PrivacyPolicyPage() {
                         </p>
                         <div className="not-prose mt-4 flex flex-wrap gap-3">
                             <Link
-                                href={to('/(marketing)/contact')}
+                                href={to('//contact')}
                                 className="bg-primary text-primary-foreground inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition hover:opacity-90"
                             >
                                 Contact Support
                             </Link>
                             <Link
-                                href={to('/(marketing)/help')}
+                                href={to('//help')}
                                 className="border-input bg-background text-foreground hover:bg-muted inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium shadow-sm transition"
                             >
                                 Help Center
@@ -572,7 +572,7 @@ export default function PrivacyPolicyPage() {
                     </div>
                     <div className="flex flex-wrap items-center gap-3 sm:justify-end">
                         <Link
-                            href={to('/(marketing)/about')}
+                            href={to('//about')}
                             className="border-input bg-background text-foreground hover:bg-muted inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium shadow-sm transition"
                         >
                             About
@@ -606,21 +606,21 @@ export default function PrivacyPolicyPage() {
 
                 <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-3 text-sm">
                     <Link
-                        href={to('/(marketing)/legal/terms')}
+                        href={to('//legal/terms')}
                         className="hover:text-foreground hover:underline"
                     >
                         Terms of Service
                     </Link>
                     <span className="text-border">•</span>
                     <Link
-                        href={to('/(marketing)/legal/ip-policy')}
+                        href={to('//legal/ip-policy')}
                         className="hover:text-foreground hover:underline"
                     >
                         IP Policy
                     </Link>
                     <span className="text-border">•</span>
                     <Link
-                        href={to('/(marketing)/legal/privacy')}
+                        href={to('//legal/privacy')}
                         className="hover:text-foreground hover:underline"
                     >
                         Privacy Policy

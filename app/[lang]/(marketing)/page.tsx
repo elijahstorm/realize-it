@@ -228,7 +228,7 @@ export default function Page({ params }: { params: { lang: string } }) {
                             </div>
                             <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                                 <Link
-                                    href={`${base}/(auth)/sign-in`}
+                                    href={`${base}/sign-in`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     {t.signIn}
@@ -301,7 +301,7 @@ export default function Page({ params }: { params: { lang: string } }) {
                                         {lang === 'en' ? 'See all products' : '전체 제품 보기'}
                                     </Link>
                                     <Link
-                                        href={`${base}/(marketing)/about`}
+                                        href={`${base}//about`}
                                         className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
                                     >
                                         {lang === 'en' ? 'Learn more about us' : '서비스 소개'}
@@ -407,7 +407,7 @@ export default function Page({ params }: { params: { lang: string } }) {
                             <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
                                 <LinkTile href={`${base}/design`} label={t.ctas.design} />
                                 <LinkTile href={`${base}/products`} label={t.ctas.products} />
-                                <LinkTile href={`${base}/(auth)/sign-in`} label={t.signIn} />
+                                <LinkTile href={`${base}/sign-in`} label={t.signIn} />
                                 <LinkTile href={`${base}/account`} label={t.ctas.account} />
                                 <LinkTile href={`${base}/orders`} label={t.ctas.orders} />
                                 <LinkTile href={`${base}/cart`} label={t.cart} />
@@ -440,7 +440,7 @@ export default function Page({ params }: { params: { lang: string } }) {
                                     {t.primary}
                                 </Link>
                                 <Link
-                                    href={`${base}/(marketing)/help`}
+                                    href={`${base}//help`}
                                     className="border-input bg-background hover:bg-muted/60 inline-flex items-center justify-center rounded-md border px-5 py-3 text-sm font-medium transition-colors"
                                 >
                                     {lang === 'en' ? 'Need help?' : '도움이 필요하신가요?'}

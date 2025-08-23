@@ -81,7 +81,7 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
         setErrorMsg(null)
         try {
             const origin = typeof window !== 'undefined' ? window.location.origin : ''
-            const redirectTo = `${origin}/${lang}/(auth)/callback${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ''}`
+            const redirectTo = `${origin}/${lang}/callback${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ''}`
             const { error } = await supabase.auth.signInWithOAuth({
                 provider,
                 options: { redirectTo },
@@ -126,19 +126,16 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             <Link href={`/${lang}/cart`} className="hover:text-primary">
                                 Cart
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/about`}
-                                className="hover:text-primary"
-                            >
+                            <Link href={`/${lang}//about`} className="hover:text-primary">
                                 About
                             </Link>
-                            <Link href={`/${lang}/(marketing)/help`} className="hover:text-primary">
+                            <Link href={`/${lang}//help`} className="hover:text-primary">
                                 Help
                             </Link>
                         </nav>
                         <div className="flex items-center gap-2">
                             <Link
-                                href={`/${lang}/(auth)/sign-up`}
+                                href={`/${lang}/sign-up`}
                                 className="bg-secondary hover:bg-secondary/80 hidden rounded-md px-3 py-1.5 text-sm md:inline-block"
                             >
                                 Sign up
@@ -184,28 +181,22 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                         </div>
                         <Separator className="my-8" />
                         <div className="text-muted-foreground grid grid-cols-2 gap-2 text-xs">
-                            <Link
-                                href={`/${lang}/(marketing)/legal/terms`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
                                 Terms
                             </Link>
                             <Link
-                                href={`/${lang}/(marketing)/legal/privacy`}
+                                href={`/${lang}//legal/privacy`}
                                 className="hover:text-foreground"
                             >
                                 Privacy
                             </Link>
                             <Link
-                                href={`/${lang}/(marketing)/legal/ip-policy`}
+                                href={`/${lang}//legal/ip-policy`}
                                 className="hover:text-foreground"
                             >
                                 IP Policy
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/contact`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//contact`} className="hover:text-foreground">
                                 Contact
                             </Link>
                         </div>
@@ -251,7 +242,7 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                                         Password
                                     </label>
                                     <Link
-                                        href={`/${lang}/(auth)/forgot-password`}
+                                        href={`/${lang}/forgot-password`}
                                         className="text-primary text-xs hover:underline"
                                     >
                                         Forgot password?
@@ -354,7 +345,7 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                         <p className="text-muted-foreground mt-6 text-center text-sm">
                             Don&apos;t have an account?{' '}
                             <Link
-                                href={`/${lang}/(auth)/sign-up${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ''}`}
+                                href={`/${lang}/sign-up${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ''}`}
                                 className="text-primary hover:underline"
                             >
                                 Create one
@@ -365,14 +356,14 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             <p>
                                 By continuing, you agree to our{' '}
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/terms`}
+                                    href={`/${lang}//legal/terms`}
                                     className="hover:text-foreground underline"
                                 >
                                     Terms
                                 </Link>{' '}
                                 and{' '}
                                 <Link
-                                    href={`/${lang}/(marketing)/legal/privacy`}
+                                    href={`/${lang}//legal/privacy`}
                                     className="hover:text-foreground underline"
                                 >
                                     Privacy Policy
@@ -394,10 +385,7 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             >
                                 Account settings
                             </Link>
-                            <Link
-                                href={`/${lang}/(marketing)/help`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}//help`} className="hover:text-foreground">
                                 Get help
                             </Link>
                         </div>
@@ -412,16 +400,13 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                         <span>RealizeIt © {new Date().getFullYear()}</span>
                     </div>
                     <nav className="flex flex-wrap items-center gap-4">
-                        <Link href={`/${lang}/(marketing)/about`} className="hover:text-foreground">
+                        <Link href={`/${lang}//about`} className="hover:text-foreground">
                             About
                         </Link>
-                        <Link
-                            href={`/${lang}/(marketing)/contact`}
-                            className="hover:text-foreground"
-                        >
+                        <Link href={`/${lang}//contact`} className="hover:text-foreground">
                             Contact
                         </Link>
-                        <Link href={`/${lang}/(marketing)/help`} className="hover:text-foreground">
+                        <Link href={`/${lang}//help`} className="hover:text-foreground">
                             Help
                         </Link>
                         <Link href={`/${lang}/admin`} className="hover:text-foreground">

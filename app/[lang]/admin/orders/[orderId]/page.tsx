@@ -314,7 +314,7 @@ export default function AdminOrderDetailPage() {
                     <AlertDescription>
                         You need admin or merchant access to view this page.
                         <div className="mt-3 flex gap-3">
-                            <Link href={`/${lang}/(auth)/sign-in`} className="underline">
+                            <Link href={`/${lang}/sign-in`} className="underline">
                                 Sign in
                             </Link>
                             <Link href={`/${lang}`} className="underline">

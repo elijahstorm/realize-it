@@ -456,10 +456,7 @@ export default function VariationsPage() {
                 {tt.myOrders}
             </Link>
             <span className="text-border">/</span>
-            <Link
-                href={`/${lang}/(marketing)/help`}
-                className="hover:text-foreground transition-colors"
-            >
+            <Link href={`/${lang}//help`} className="hover:text-foreground transition-colors">
                 {tt.help}
             </Link>
             <span className="text-border">/</span>
@@ -779,7 +776,7 @@ export default function VariationsPage() {
                                         Orders
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(marketing)/about`}
+                                        href={`/${lang}//about`}
                                         className="hover:bg-accent rounded-md border px-3 py-2"
                                     >
                                         About
@@ -794,25 +791,25 @@ export default function VariationsPage() {
                                 <div className="text-muted-foreground mt-3 flex flex-wrap gap-3 text-xs">
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}/(marketing)/legal/terms`}
+                                        href={`/${lang}//legal/terms`}
                                     >
                                         {tt.legal.terms}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}/(marketing)/legal/privacy`}
+                                        href={`/${lang}//legal/privacy`}
                                     >
                                         {tt.legal.privacy}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}/(marketing)/legal/ip-policy`}
+                                        href={`/${lang}//legal/ip-policy`}
                                     >
                                         {tt.legal.ip}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}/(marketing)/contact`}
+                                        href={`/${lang}//contact`}
                                     >
                                         {tt.legal.contact}
                                     </Link>

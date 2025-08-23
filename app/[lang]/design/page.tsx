@@ -125,7 +125,7 @@ export default function DesignEntryPage() {
                             Browse Products
                         </Link>
                         <Link
-                            href={`/${lang}/(auth)/sign-in`}
+                            href={`/${lang}/sign-in`}
                             className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-md px-3 py-1.5 text-sm shadow-sm"
                         >
                             Sign in
@@ -156,19 +156,19 @@ export default function DesignEntryPage() {
                                     <span className="ml-2 inline-flex gap-2">
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}/(marketing)/legal/terms`}
+                                            href={`/${lang}//legal/terms`}
                                         >
                                             Terms
                                         </Link>
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}/(marketing)/legal/ip-policy`}
+                                            href={`/${lang}//legal/ip-policy`}
                                         >
                                             IP Policy
                                         </Link>
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}/(marketing)/legal/privacy`}
+                                            href={`/${lang}//legal/privacy`}
                                         >
                                             Privacy
                                         </Link>
@@ -408,19 +408,19 @@ export default function DesignEntryPage() {
                                     <div className="text-muted-foreground">Useful links</div>
                                     <div className="flex flex-wrap gap-3">
                                         <Link
-                                            href={`/${lang}/(marketing)/about`}
+                                            href={`/${lang}//about`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             About
                                         </Link>
                                         <Link
-                                            href={`/${lang}/(marketing)/help`}
+                                            href={`/${lang}//help`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             Help
                                         </Link>
                                         <Link
-                                            href={`/${lang}/(marketing)/contact`}
+                                            href={`/${lang}//contact`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             Contact

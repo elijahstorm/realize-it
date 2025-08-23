@@ -207,7 +207,7 @@ export default function CartPage() {
                         </Link>
                         <span className="text-muted-foreground">·</span>
                         <Link
-                            href={`/${lang}/(marketing)/about`}
+                            href={`/${lang}//about`}
                             className="text-muted-foreground hover:text-foreground hover:underline"
                         >
                             About
@@ -229,13 +229,13 @@ export default function CartPage() {
                                     : 'Sign in to sync your cart and order history across devices.'}
                                 <div className="mt-2 flex flex-wrap gap-2">
                                     <Link
-                                        href={`/${lang}/(auth)/sign-in`}
+                                        href={`/${lang}/sign-in`}
                                         className="bg-primary text-primary-foreground inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium hover:opacity-90"
                                     >
                                         {locale === 'ko-KR' ? '로그인' : 'Sign in'}
                                     </Link>
                                     <Link
-                                        href={`/${lang}/(auth)/sign-up`}
+                                        href={`/${lang}/sign-up`}
                                         className="border-input hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-1.5 text-sm font-medium"
                                     >
                                         {locale === 'ko-KR' ? '회원가입' : 'Create account'}
@@ -591,7 +591,7 @@ export default function CartPage() {
                                     {locale === 'ko-KR' ? '디자인 추가' : 'Add more designs'}
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/contact`}
+                                    href={`/${lang}//contact`}
                                     className="text-muted-foreground hover:text-foreground ml-auto text-sm hover:underline"
                                 >
                                     {locale === 'ko-KR' ? '문의하기' : 'Contact us'}
@@ -675,14 +675,14 @@ export default function CartPage() {
                                     </Link>
                                     <span>·</span>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/terms`}
+                                        href={`/${lang}//legal/terms`}
                                         className="hover:underline"
                                     >
                                         {locale === 'ko-KR' ? '이용 약관' : 'Terms'}
                                     </Link>
                                     <span>·</span>
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/privacy`}
+                                        href={`/${lang}//legal/privacy`}
                                         className="hover:underline"
                                     >
                                         {locale === 'ko-KR' ? '개인정보처리방침' : 'Privacy'}

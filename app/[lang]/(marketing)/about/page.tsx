@@ -128,14 +128,14 @@ export default function AboutPage({ params }: PageProps) {
                         </div>
                         <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-4 text-xs">
                             <Link
-                                href={`${base}/(auth)/sign-in`}
+                                href={`${base}/sign-in`}
                                 className="hover:text-foreground underline underline-offset-4"
                             >
                                 Sign in
                             </Link>
                             <span>·</span>
                             <Link
-                                href={`${base}/(auth)/sign-up`}
+                                href={`${base}/sign-up`}
                                 className="hover:text-foreground underline underline-offset-4"
                             >
                                 Create account
@@ -149,21 +149,21 @@ export default function AboutPage({ params }: PageProps) {
                             </Link>
                             <span>·</span>
                             <Link
-                                href={`${base}/(marketing)/legal/terms`}
+                                href={`${base}//legal/terms`}
                                 className="hover:text-foreground underline underline-offset-4"
                             >
                                 Terms
                             </Link>
                             <span>·</span>
                             <Link
-                                href={`${base}/(marketing)/legal/privacy`}
+                                href={`${base}//legal/privacy`}
                                 className="hover:text-foreground underline underline-offset-4"
                             >
                                 Privacy
                             </Link>
                             <span>·</span>
                             <Link
-                                href={`${base}/(marketing)/legal/ip-policy`}
+                                href={`${base}//legal/ip-policy`}
                                 className="hover:text-foreground underline underline-offset-4"
                             >
                                 IP policy
@@ -208,7 +208,7 @@ export default function AboutPage({ params }: PageProps) {
                                 title="Trust & Safety"
                                 desc="Clear rights and consent flows. Customer IP and AI policies enforced."
                                 link={{
-                                    href: `${base}/(marketing)/legal/ip-policy`,
+                                    href: `${base}//legal/ip-policy`,
                                     label: 'IP policy',
                                 }}
                             />
@@ -349,19 +349,19 @@ export default function AboutPage({ params }: PageProps) {
                         </p>
                         <div className="mt-4 flex flex-wrap gap-3 text-sm">
                             <Link
-                                href={`${base}/(marketing)/legal/terms`}
+                                href={`${base}//legal/terms`}
                                 className="ring-border hover:bg-accent hover:text-accent-foreground rounded-lg px-3 py-1.5 ring-1"
                             >
                                 Terms of Service
                             </Link>
                             <Link
-                                href={`${base}/(marketing)/legal/privacy`}
+                                href={`${base}//legal/privacy`}
                                 className="ring-border hover:bg-accent hover:text-accent-foreground rounded-lg px-3 py-1.5 ring-1"
                             >
                                 Privacy Policy
                             </Link>
                             <Link
-                                href={`${base}/(marketing)/legal/ip-policy`}
+                                href={`${base}//legal/ip-policy`}
                                 className="ring-border hover:bg-accent hover:text-accent-foreground rounded-lg px-3 py-1.5 ring-1"
                             >
                                 IP & Rights Policy
@@ -385,14 +385,14 @@ export default function AboutPage({ params }: PageProps) {
                         <ul className="mt-3 space-y-2 text-sm">
                             <li>
                                 <Link
-                                    href={`${base}/(auth)/sign-in`}
+                                    href={`${base}/sign-in`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     Sign in
                                 </Link>{' '}
                                 or{' '}
                                 <Link
-                                    href={`${base}/(auth)/sign-up`}
+                                    href={`${base}/sign-up`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     Create account

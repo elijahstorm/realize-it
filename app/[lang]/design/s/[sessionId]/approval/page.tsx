@@ -216,7 +216,7 @@ export default function ApprovalPage() {
                         </Link>
                         <span className="text-muted-foreground">/</span>
                         <Link
-                            href={`/${lang}/(marketing)/help`.replace('/(marketing)', '')}
+                            href={`/${lang}//help`.replace('/', '')}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             {locale === 'ko-KR' ? '도움말' : 'Help'}
@@ -281,10 +281,7 @@ export default function ApprovalPage() {
                             {error}
                             <div className="mt-2 text-sm">
                                 <Link
-                                    href={`/${lang}/(marketing)/contact`.replace(
-                                        '/(marketing)',
-                                        ''
-                                    )}
+                                    href={`/${lang}//contact`.replace('/', '')}
                                     className="underline"
                                 >
                                     {locale === 'ko-KR' ? '지원팀에 문의' : 'Contact support'}
@@ -591,17 +588,14 @@ export default function ApprovalPage() {
                                 </Link>
                                 <span>•</span>
                                 <Link
-                                    href={`/${lang}/(marketing)/about`.replace('/(marketing)', '')}
+                                    href={`/${lang}//about`.replace('/', '')}
                                     className="hover:underline"
                                 >
                                     {locale === 'ko-KR' ? '회사 소개' : 'About'}
                                 </Link>
                                 <span>•</span>
                                 <Link
-                                    href={`/${lang}/(marketing)/contact`.replace(
-                                        '/(marketing)',
-                                        ''
-                                    )}
+                                    href={`/${lang}//contact`.replace('/', '')}
                                     className="hover:underline"
                                 >
                                     {locale === 'ko-KR' ? '문의하기' : 'Contact'}

@@ -336,15 +336,12 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                         </h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             Secure payment via Stripe. Ships to South Korea and more. Need help?{' '}
-                            <Link
-                                href={`/${lang}/(marketing)/help`}
-                                className="hover:text-primary underline"
-                            >
+                            <Link href={`/${lang}//help`} className="hover:text-primary underline">
                                 Visit Help
                             </Link>{' '}
                             or{' '}
                             <Link
-                                href={`/${lang}/(marketing)/contact`}
+                                href={`/${lang}//contact`}
                                 className="hover:text-primary underline"
                             >
                                 Contact us
@@ -521,21 +518,21 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                                 <span>
                                     I confirm the design is AI-generated and I accept the{' '}
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/ip-policy`}
+                                        href={`/${lang}//legal/ip-policy`}
                                         className="hover:text-primary underline"
                                     >
                                         IP Policy
                                     </Link>
                                     ,{' '}
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/terms`}
+                                        href={`/${lang}//legal/terms`}
                                         className="hover:text-primary underline"
                                     >
                                         Terms
                                     </Link>{' '}
                                     and{' '}
                                     <Link
-                                        href={`/${lang}/(marketing)/legal/privacy`}
+                                        href={`/${lang}//legal/privacy`}
                                         className="hover:text-primary underline"
                                     >
                                         Privacy
@@ -681,21 +678,21 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                                 By paying, you agree to our{' '}
                                 <Link
                                     className="hover:text-primary underline"
-                                    href={`/${lang}/(marketing)/legal/terms`}
+                                    href={`/${lang}//legal/terms`}
                                 >
                                     Terms
                                 </Link>
                                 ,{' '}
                                 <Link
                                     className="hover:text-primary underline"
-                                    href={`/${lang}/(marketing)/legal/privacy`}
+                                    href={`/${lang}//legal/privacy`}
                                 >
                                     Privacy
                                 </Link>{' '}
                                 and{' '}
                                 <Link
                                     className="hover:text-primary underline"
-                                    href={`/${lang}/(marketing)/legal/ip-policy`}
+                                    href={`/${lang}//legal/ip-policy`}
                                 >
                                     IP Policy
                                 </Link>
@@ -716,25 +713,25 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                                     Account
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/about`}
+                                    href={`/${lang}//about`}
                                     className="hover:text-primary underline"
                                 >
                                     About
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(marketing)/help`}
+                                    href={`/${lang}//help`}
                                     className="hover:text-primary underline"
                                 >
                                     Help Center
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(auth)/sign-in`}
+                                    href={`/${lang}/sign-in`}
                                     className="hover:text-primary underline"
                                 >
                                     Sign in
                                 </Link>
                                 <Link
-                                    href={`/${lang}/(auth)/sign-up`}
+                                    href={`/${lang}/sign-up`}
                                     className="hover:text-primary underline"
                                 >
                                     Create account
