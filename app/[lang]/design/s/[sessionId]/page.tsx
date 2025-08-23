@@ -6,9 +6,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import { cn } from '@/utils/utils'
-import { Send, Sparkles, ImageIcon, Loader2, UserRound } from 'lucide-react'
+import { Send, Sparkles, Loader2, UserRound } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 
 interface PageProps {
@@ -46,7 +45,6 @@ const DESIGN_PROMPTS = [
 
 export default function Page({ params }: PageProps) {
     const { sessionId, lang } = React.use(params)
-    const router = useRouter()
     const { toast } = useToast()
     const supabase = useMemo(() => supabaseBrowser, [])
     const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -203,6 +201,22 @@ What kind of design are you looking to create?`,
                                     if (data.reasoning) {
                                         assistantMessage.reasoning = data.reasoning
                                     }
+
+                                    const { error } = await supabase
+                                        .from('design_session_messages')
+                                        .insert({
+                                            design_session_id: sessionId,
+                                            content: data.content,
+                                            reasoning: data.reasoning || null,
+                                            image_status: 'complete',
+                                            image_data: data.image_data || null,
+                                            image_url: data.image_url || null,
+                                            image_prompt: data.image_prompt || null,
+                                            partial_index: null,
+                                        })
+
+                                    if (error) console.error(error)
+
                                     setMessages((prev) =>
                                         prev.map((m) =>
                                             m.id === assistantMessage.id
@@ -248,8 +262,23 @@ What kind of design are you looking to create?`,
                                             assistantMessage.imageData = data.image_data
                                             assistantMessage.imageUrl = data.image_url
                                             assistantMessage.imagePrompt = data.image_prompt
-                                            // Clear partial data
                                             delete assistantMessage.partialIndex
+
+                                            const { error } = await supabase
+                                                .from('design_session_messages')
+                                                .insert({
+                                                    design_session_id: sessionId,
+                                                    content: data.content,
+                                                    reasoning: data.reasoning || null,
+                                                    image_status: 'complete',
+                                                    image_data: data.image_data || null,
+                                                    image_url: data.image_url || null,
+                                                    image_prompt: data.image_prompt || null,
+                                                    partial_index: null,
+                                                })
+
+                                            if (error) console.error(error)
+
                                             setMessages((prev) =>
                                                 prev.map((m) =>
                                                     m.id === assistantMessage.id
