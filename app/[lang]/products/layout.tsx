@@ -4,7 +4,6 @@ import {
     SidebarProvider,
     Sidebar,
     SidebarTrigger,
-    SidebarInset,
     SidebarHeader,
     SidebarContent,
     SidebarGroup,
@@ -16,11 +15,12 @@ import {
     SidebarSeparator,
     SidebarFooter,
     SidebarInput,
+    useSidebar,
 } from '@/components/ui/sidebar'
 import { cn } from '@/utils/utils'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 // Remove custom LayoutProps and use Next.js built-in types
 interface ProductsLayoutProps {
@@ -173,6 +173,14 @@ export default function ProductsLayout({ children, params }: ProductsLayoutProps
         })
     }, [params])
 
+    return (
+        <SidebarProvider defaultOpen>
+            <InsideSidebar lang={lang}>{children}</InsideSidebar>
+        </SidebarProvider>
+    )
+}
+
+function InsideSidebar({ lang, children }: { lang: Lang; children: ReactNode }) {
     const t = useI18n(lang)
     const router = useRouter()
     const pathname = usePathname()
@@ -278,403 +286,403 @@ export default function ProductsLayout({ children, params }: ProductsLayoutProps
         return found ? found.names[lang] : t.allProducts
     }, [currentProductSlug, lang, t.allProducts])
 
-    return (
-        <SidebarProvider defaultOpen>
-            <div className="bg-background text-foreground min-h-screen">
-                <Sidebar
-                    side="left"
-                    variant="sidebar"
-                    collapsible="offcanvas"
-                    className="border-border border-r"
-                >
-                    <SidebarHeader className="px-3 py-2">
-                        <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                                <span className="bg-primary text-primary-foreground inline-flex h-8 w-8 items-center justify-center rounded-md font-semibold">
-                                    R
-                                </span>
-                                <div className="text-sm leading-tight">
-                                    <div className="font-semibold">RealizeIt</div>
-                                    <div className="text-muted-foreground">{t.catalog}</div>
-                                </div>
-                            </div>
-                            <Link
-                                href={switchLangHref}
-                                className="border-input bg-card hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs"
-                                aria-label="Switch language"
-                            >
-                                <span className="font-medium">{t.language}:</span>
-                                <span className="uppercase">{otherLang}</span>
-                            </Link>
-                        </div>
-                        <div className="mt-3">
-                            <SidebarInput
-                                value={filters.q}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setFilters((f) => ({ ...f, q: e.target.value }))
-                                }
-                                placeholder={t.searchPlaceholder}
-                                className="w-full"
-                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') onApplyClick()
-                                }}
-                            />
-                        </div>
-                    </SidebarHeader>
+    const sidebar = useSidebar()
 
-                    <SidebarContent>
-                        <SidebarGroup>
-                            <SidebarGroupLabel>{t.catalog}</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild isActive={!currentProductSlug}>
+    return (
+        <>
+            <Sidebar
+                side="left"
+                variant="sidebar"
+                collapsible="offcanvas"
+                className="border-border border-r"
+            >
+                <SidebarHeader className="bg-background px-3 py-2">
+                    <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <span className="bg-primary text-primary-foreground inline-flex h-8 w-8 items-center justify-center rounded-md font-semibold">
+                                R
+                            </span>
+                            <div className="text-sm leading-tight">
+                                <div className="font-semibold">RealizeIt</div>
+                                <div className="text-muted-foreground">{t.catalog}</div>
+                            </div>
+                        </div>
+                        <Link
+                            href={switchLangHref}
+                            className="border-input bg-card hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs"
+                            aria-label="Switch language"
+                        >
+                            <span className="font-medium">{t.language}:</span>
+                            <span className="uppercase">{otherLang}</span>
+                        </Link>
+                    </div>
+                    <div className="mt-3">
+                        <SidebarInput
+                            value={filters.q}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setFilters((f) => ({ ...f, q: e.target.value }))
+                            }
+                            placeholder={t.searchPlaceholder}
+                            className="w-full"
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                if (e.key === 'Enter') onApplyClick()
+                            }}
+                        />
+                    </div>
+                </SidebarHeader>
+
+                <SidebarContent className="bg-background">
+                    <SidebarGroup>
+                        <SidebarGroupLabel>{t.catalog}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild isActive={!currentProductSlug}>
+                                        <Link
+                                            href={hrefWithParams(`/${lang}/products`)}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">🛍️</span>
+                                            <span>{t.allProducts}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                {PRODUCT_TYPES.map((p) => (
+                                    <SidebarMenuItem key={p.slug}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            isActive={currentProductSlug === p.slug}
+                                        >
                                             <Link
-                                                href={hrefWithParams(`/${lang}/products`)}
+                                                href={hrefWithParams(`/${lang}/products/${p.slug}`)}
                                                 className="flex items-center gap-2"
                                             >
-                                                <span className="text-lg">🛍️</span>
-                                                <span>{t.allProducts}</span>
+                                                <span className="text-lg">{p.icon}</span>
+                                                <span>{p.names[lang]}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
-                                    {PRODUCT_TYPES.map((p) => (
-                                        <SidebarMenuItem key={p.slug}>
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={currentProductSlug === p.slug}
-                                            >
-                                                <Link
-                                                    href={hrefWithParams(
-                                                        `/${lang}/products/${p.slug}`
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+
+                    <SidebarSeparator />
+
+                    <SidebarGroup>
+                        <SidebarGroupLabel>{t.filters}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <div className="max-w-[200px] space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-muted-foreground text-xs">
+                                        {t.colors}
+                                    </label>
+                                    <div className="grid grid-cols-8 gap-2">
+                                        {COLOR_OPTIONS.map((c) => {
+                                            const active = filters.colors.includes(c.v)
+                                            return (
+                                                <button
+                                                    key={c.v}
+                                                    type="button"
+                                                    onClick={() => setColor(c.v)}
+                                                    className={cn(
+                                                        'relative size-5 rounded-md border transition',
+                                                        active
+                                                            ? 'ring-primary ring-2 ring-offset-2'
+                                                            : '',
+                                                        'border-border'
                                                     )}
-                                                    className="flex items-center gap-2"
+                                                    style={{ backgroundColor: c.hex }}
+                                                    aria-pressed={active}
+                                                    aria-label={c.v}
                                                 >
-                                                    <span className="text-lg">{p.icon}</span>
-                                                    <span>{p.names[lang]}</span>
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    ))}
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-
-                        <SidebarSeparator />
-
-                        <SidebarGroup>
-                            <SidebarGroupLabel>{t.filters}</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <label className="text-muted-foreground text-xs">
-                                            {t.colors}
-                                        </label>
-                                        <div className="grid grid-cols-8 gap-2">
-                                            {COLOR_OPTIONS.map((c) => {
-                                                const active = filters.colors.includes(c.v)
-                                                return (
-                                                    <button
-                                                        key={c.v}
-                                                        type="button"
-                                                        onClick={() => setColor(c.v)}
-                                                        className={cn(
-                                                            'relative h-7 w-7 rounded-md border transition',
-                                                            active
-                                                                ? 'ring-primary ring-2 ring-offset-2'
-                                                                : '',
-                                                            'border-border'
-                                                        )}
-                                                        style={{ backgroundColor: c.hex }}
-                                                        aria-pressed={active}
-                                                        aria-label={c.v}
-                                                    >
-                                                        <span className="sr-only">{c.v}</span>
-                                                        {active ? (
-                                                            <svg
-                                                                viewBox="0 0 20 20"
-                                                                className="fill-primary absolute -top-1 -right-1 h-4 w-4"
-                                                            >
-                                                                <circle cx="10" cy="10" r="10" />
-                                                            </svg>
-                                                        ) : null}
-                                                    </button>
-                                                )
-                                            })}
-                                        </div>
+                                                    <span className="sr-only">{c.v}</span>
+                                                    {active ? (
+                                                        <svg
+                                                            viewBox="0 0 20 20"
+                                                            className="fill-primary absolute -top-1.5 -right-1.5 size-3"
+                                                        >
+                                                            <circle cx="10" cy="10" r="10" />
+                                                        </svg>
+                                                    ) : null}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
+                                </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-muted-foreground text-xs">
-                                            {t.sizes}
-                                        </label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {SIZE_OPTIONS.map((s) => {
-                                                const active = filters.sizes.includes(s)
-                                                return (
-                                                    <button
-                                                        key={s}
-                                                        type="button"
-                                                        onClick={() => setSize(s)}
-                                                        className={cn(
-                                                            'inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium transition',
-                                                            active
-                                                                ? 'bg-primary text-primary-foreground border-transparent'
-                                                                : 'bg-card text-foreground hover:bg-accent hover:text-accent-foreground border-border'
-                                                        )}
-                                                        aria-pressed={active}
-                                                    >
-                                                        {s}
-                                                    </button>
-                                                )
-                                            })}
-                                        </div>
+                                <div className="space-y-2">
+                                    <label className="text-muted-foreground text-xs">
+                                        {t.sizes}
+                                    </label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {SIZE_OPTIONS.map((s) => {
+                                            const active = filters.sizes.includes(s)
+                                            return (
+                                                <button
+                                                    key={s}
+                                                    type="button"
+                                                    onClick={() => setSize(s)}
+                                                    className={cn(
+                                                        'inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium transition',
+                                                        active
+                                                            ? 'bg-primary text-primary-foreground border-transparent'
+                                                            : 'bg-card text-foreground hover:bg-accent hover:text-accent-foreground border-border'
+                                                    )}
+                                                    aria-pressed={active}
+                                                >
+                                                    {s}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
+                                </div>
 
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="space-y-1">
-                                            <label className="text-muted-foreground text-xs">
-                                                {t.min}
-                                            </label>
-                                            <input
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
-                                                value={filters.priceMin}
-                                                onChange={(e) =>
-                                                    setFilters((f) => ({
-                                                        ...f,
-                                                        priceMin:
-                                                            e.target.value === ''
-                                                                ? ''
-                                                                : Number(e.target.value),
-                                                    }))
-                                                }
-                                                placeholder="0"
-                                                className="border-input bg-background w-full rounded-md border px-2 py-1 text-sm"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-muted-foreground text-xs">
-                                                {t.max}
-                                            </label>
-                                            <input
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
-                                                value={filters.priceMax}
-                                                onChange={(e) =>
-                                                    setFilters((f) => ({
-                                                        ...f,
-                                                        priceMax:
-                                                            e.target.value === ''
-                                                                ? ''
-                                                                : Number(e.target.value),
-                                                    }))
-                                                }
-                                                placeholder="100"
-                                                className="border-input bg-background w-full rounded-md border px-2 py-1 text-sm"
-                                            />
-                                        </div>
-                                    </div>
-
+                                <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-1">
                                         <label className="text-muted-foreground text-xs">
-                                            {t.sortBy}
+                                            {t.min}
                                         </label>
-                                        <select
-                                            value={filters.sort}
+                                        <input
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            value={filters.priceMin}
                                             onChange={(e) =>
-                                                setFilters((f) => ({ ...f, sort: e.target.value }))
+                                                setFilters((f) => ({
+                                                    ...f,
+                                                    priceMin:
+                                                        e.target.value === ''
+                                                            ? ''
+                                                            : Number(e.target.value),
+                                                }))
                                             }
+                                            placeholder="0"
                                             className="border-input bg-background w-full rounded-md border px-2 py-1 text-sm"
-                                        >
-                                            {SORT_OPTIONS.map((o) => (
-                                                <option key={o.v} value={o.v}>
-                                                    {o.names[lang]}
-                                                </option>
-                                            ))}
-                                        </select>
+                                        />
                                     </div>
-
-                                    <div className="flex items-center gap-2 pt-1">
-                                        <button
-                                            onClick={onApplyClick}
-                                            className={cn(
-                                                'bg-primary text-primary-foreground inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium shadow-sm transition hover:opacity-90',
-                                                saving && 'opacity-70'
-                                            )}
-                                            disabled={saving}
-                                        >
-                                            {saving ? t.saving : t.apply}
-                                        </button>
-                                        <button
-                                            onClick={onReset}
-                                            className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-sm font-medium"
-                                        >
-                                            {t.reset}
-                                        </button>
+                                    <div className="space-y-1">
+                                        <label className="text-muted-foreground text-xs">
+                                            {t.max}
+                                        </label>
+                                        <input
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            value={filters.priceMax}
+                                            onChange={(e) =>
+                                                setFilters((f) => ({
+                                                    ...f,
+                                                    priceMax:
+                                                        e.target.value === ''
+                                                            ? ''
+                                                            : Number(e.target.value),
+                                                }))
+                                            }
+                                            placeholder="100"
+                                            className="border-input bg-background w-full rounded-md border px-2 py-1 text-sm"
+                                        />
                                     </div>
                                 </div>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
 
-                        <SidebarSeparator />
+                                <div className="space-y-1">
+                                    <label className="text-muted-foreground text-xs">
+                                        {t.sortBy}
+                                    </label>
+                                    <select
+                                        value={filters.sort}
+                                        onChange={(e) =>
+                                            setFilters((f) => ({ ...f, sort: e.target.value }))
+                                        }
+                                        className="border-input bg-background w-full rounded-md border px-2 py-1 text-sm"
+                                    >
+                                        {SORT_OPTIONS.map((o) => (
+                                            <option key={o.v} value={o.v}>
+                                                {o.names[lang]}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                        <SidebarGroup>
-                            <SidebarGroupLabel>{t.quickLinks}</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/design`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">✨</span>
-                                                <span>{t.designStudio}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/cart`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">🛒</span>
-                                                <span>{t.cart}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/checkout`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">💳</span>
-                                                <span>{t.checkout}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/orders`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">📦</span>
-                                                <span>{t.orders}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/account`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">👤</span>
-                                                <span>{t.account}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-
-                        <SidebarSeparator />
-
-                        <SidebarGroup>
-                            <SidebarGroupLabel>{t.marketing}</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/(marketing)/about`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">ℹ️</span>
-                                                <span>{t.about}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/(marketing)/help`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">🧭</span>
-                                                <span>{t.help}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link
-                                                href={`/${lang}/(marketing)/contact`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <span className="text-lg">✉️</span>
-                                                <span>{t.contact}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-                    </SidebarContent>
-
-                    <SidebarFooter className="px-3 py-2">
-                        <div className="text-muted-foreground flex items-center justify-between text-xs">
-                            <Link href={`/${lang}/admin`} className="hover:text-foreground">
-                                {t.admin}
-                            </Link>
-                            <span>© {new Date().getFullYear()} RealizeIt</span>
-                        </div>
-                    </SidebarFooter>
-                </Sidebar>
-
-                <SidebarInset>
-                    <header className="border-border bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur">
-                        <div className="flex h-14 items-center gap-3 px-3">
-                            <SidebarTrigger className="-ml-1" />
-                            <div className="flex min-w-0 flex-1 items-center gap-3">
-                                <div className="text-muted-foreground truncate text-sm">
-                                    <span className="text-foreground font-medium">{t.catalog}</span>
-                                    <span className="text-muted-foreground mx-2">/</span>
-                                    <span className="truncate">{activeLabel}</span>
+                                <div className="flex items-center gap-2 pt-1">
+                                    <button
+                                        onClick={onApplyClick}
+                                        className={cn(
+                                            'bg-primary text-primary-foreground inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium shadow-sm transition hover:opacity-90',
+                                            saving && 'opacity-70'
+                                        )}
+                                        disabled={saving}
+                                    >
+                                        {saving ? t.saving : t.apply}
+                                    </button>
+                                    <button
+                                        onClick={onReset}
+                                        className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-sm font-medium"
+                                    >
+                                        {t.reset}
+                                    </button>
                                 </div>
                             </div>
-                            <nav className="hidden items-center gap-1 md:flex">
-                                <Link
-                                    href={`/${lang}/design`}
-                                    className="bg-primary text-primary-foreground inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium shadow hover:opacity-90"
-                                >
-                                    ✨ {t.designStudio}
-                                </Link>
-                                <Link
-                                    href={`/${lang}/cart`}
-                                    className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-1.5 text-sm"
-                                >
-                                    🛒 {t.cart}
-                                </Link>
-                                <Link
-                                    href={`/${lang}/account`}
-                                    className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-1.5 text-sm"
-                                >
-                                    👤 {t.account}
-                                </Link>
-                            </nav>
-                        </div>
-                    </header>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
 
-                    <main className="p-4 md:p-6">
-                        <div className="mx-auto max-w-7xl">{children}</div>
-                    </main>
-                </SidebarInset>
+                    <SidebarSeparator />
+
+                    <SidebarGroup>
+                        <SidebarGroupLabel>{t.quickLinks}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/design`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">✨</span>
+                                            <span>{t.designStudio}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/cart`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">🛒</span>
+                                            <span>{t.cart}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/checkout`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">💳</span>
+                                            <span>{t.checkout}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/orders`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">📦</span>
+                                            <span>{t.orders}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/account`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">👤</span>
+                                            <span>{t.account}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+
+                    <SidebarSeparator />
+
+                    <SidebarGroup>
+                        <SidebarGroupLabel>{t.marketing}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/(marketing)/about`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">ℹ️</span>
+                                            <span>{t.about}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/(marketing)/help`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">🧭</span>
+                                            <span>{t.help}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/${lang}/(marketing)/contact`}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <span className="text-lg">✉️</span>
+                                            <span>{t.contact}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+
+                <SidebarFooter className="bg-background px-3 py-2">
+                    <div className="text-muted-foreground flex items-center justify-between text-xs">
+                        <Link href={`/${lang}/admin`} className="hover:text-foreground">
+                            {t.admin}
+                        </Link>
+                        <span>© {new Date().getFullYear()} RealizeIt</span>
+                    </div>
+                </SidebarFooter>
+            </Sidebar>
+
+            <div
+                className={`bg-background text-foreground min-h-screen transition-[ml] ${sidebar.open && !sidebar.isMobile ? 'ml-[230px]' : ''}`}
+            >
+                <header className="border-border bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur">
+                    <div className="flex h-14 items-center gap-3 px-3">
+                        <SidebarTrigger className="-ml-1" />
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                            <div className="text-muted-foreground truncate text-sm">
+                                <span className="text-foreground font-medium">{t.catalog}</span>
+                                <span className="text-muted-foreground mx-2">/</span>
+                                <span className="truncate">{activeLabel}</span>
+                            </div>
+                        </div>
+                        <nav className="hidden items-center gap-1 md:flex">
+                            <Link
+                                href={`/${lang}/design`}
+                                className="bg-primary text-primary-foreground inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium shadow hover:opacity-90"
+                            >
+                                ✨ {t.designStudio}
+                            </Link>
+                            <Link
+                                href={`/${lang}/cart`}
+                                className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-1.5 text-sm"
+                            >
+                                🛒 {t.cart}
+                            </Link>
+                            <Link
+                                href={`/${lang}/account`}
+                                className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-1.5 text-sm"
+                            >
+                                👤 {t.account}
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
+
+                <main className="p-4 md:p-6">
+                    <div className="mx-auto max-w-7xl">{children}</div>
+                </main>
             </div>
-        </SidebarProvider>
+        </>
     )
 }

@@ -399,7 +399,7 @@ export default function ProductsPage() {
                                     </li>
                                     <li>Automatic Printify fulfillment with tracking for KR.</li>
                                 </ul>
-                                <div className="mt-4 flex gap-2">
+                                <div className="mt-4 flex flex-row items-center gap-2">
                                     <Link
                                         href={build('/legal/terms')}
                                         className="text-primary text-xs hover:underline"

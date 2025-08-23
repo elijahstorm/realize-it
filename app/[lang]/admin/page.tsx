@@ -38,18 +38,24 @@ function useAdminAccess() {
             try {
                 const { data: sessionData } = await supabase.auth.getUser()
                 const user = sessionData.user || null
-                if (!isMounted) return
+                if (!isMounted || !user) return
+
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('is_admin, is_merchant, display_name, language, locale, phone')
+                    .eq('user_id', user.id)
+                    .single()
+
+                console.log(profile)
+
+                if (error) {
+                    console.error('Error fetching profile:', error)
+                } else {
+                    console.log('Profile:', profile)
+                }
+
                 setEmail(user?.email ?? null)
-                const meta: any = user?.user_metadata || {}
-                const appMeta: any = user?.app_metadata || {}
-                const roles: string[] = Array.isArray(appMeta?.roles) ? appMeta.roles : []
-                const admin =
-                    meta?.is_admin === true ||
-                    meta?.seller === true ||
-                    roles.includes('admin') ||
-                    roles.includes('seller') ||
-                    roles.includes('merchant')
-                setAllowed(!!user && admin)
+                setAllowed(!!user && profile?.is_admin)
             } catch (_e) {
                 setAllowed(false)
             } finally {

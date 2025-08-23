@@ -91,8 +91,12 @@ const INTERNAL_TYPES = [
     'journal',
 ]
 
-export default function AdminProductsMappingPage({ params }: { params: { lang: string } }) {
-    const { lang } = params
+export default function AdminProductsMappingPage({
+    params,
+}: {
+    params: Promise<{ lang: string }>
+}) {
+    const { lang } = React.use(params)
     const router = useRouter()
     const supabase = useMemo(() => supabaseBrowser, [])
     const { toast } = useToast()
@@ -613,7 +617,7 @@ export default function AdminProductsMappingPage({ params }: { params: { lang: s
                             {!loading && error && (
                                 <TableRow>
                                     <TableCell colSpan={7}>
-                                        <div className="border-destructive/30 bg-destructive/10 text-destructive-foreground flex items-center justify-between rounded-md border p-4">
+                                        <div className="border-destructive/30 bg-destructive/10 text-destructive-background flex items-center justify-between rounded-md border p-4">
                                             <div>
                                                 <div className="font-medium">
                                                     Failed to load mappings

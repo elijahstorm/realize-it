@@ -22,7 +22,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/utils/utils'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React, { useMemo, useState } from 'react'
 
 // Data model and catalog for products supported in POC
@@ -371,12 +371,8 @@ function SizePill({
     )
 }
 
-export default function ProductDetailPage({
-    params,
-}: {
-    params: { lang: string; productSlug: string }
-}) {
-    const { lang, productSlug } = params
+export default function ProductDetailPage() {
+    const { lang, productSlug } = useParams() as { lang: string; productSlug: string }
     const product = useMemo(() => findProduct(productSlug), [productSlug])
     const router = useRouter()
     const { toast } = useToast()
@@ -425,7 +421,7 @@ export default function ProductDetailPage({
                                     key={idx}
                                     className="flex items-center justify-center"
                                 >
-                                    <Image
+                                    <img
                                         src={src}
                                         alt={`${product.name} preview ${idx + 1}`}
                                         className="h-[420px] w-full rounded-lg object-cover sm:h-[520px]"
@@ -439,7 +435,7 @@ export default function ProductDetailPage({
                     </Carousel>
                     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
                         {product.images.slice(0, 6).map((src, idx) => (
-                            <Image
+                            <img
                                 key={`thumb-${idx}`}
                                 src={src}
                                 alt={`${product.name} thumbnail ${idx + 1}`}

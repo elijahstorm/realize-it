@@ -4,9 +4,9 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-type Props = { params: { lang: string } }
+type Props = { params: Promise<{ lang: string }> }
 
 function pathFor(lang: string, p: string) {
     return `/${lang}${p}`
@@ -49,7 +49,8 @@ function Section({
     )
 }
 
-export default function Page({ params: { lang } }: Props) {
+export default function Page({ params }: Props) {
+    const { lang } = React.use(params)
     const links = {
         design: pathFor(lang, '/design'),
         checkout: pathFor(lang, '/checkout'),

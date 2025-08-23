@@ -5,7 +5,6 @@ import {
     SidebarProvider,
     Sidebar,
     SidebarTrigger,
-    SidebarInset,
     SidebarHeader,
     SidebarContent,
     SidebarFooter,
@@ -16,10 +15,10 @@ import {
     SidebarMenuButton,
     SidebarSeparator,
     SidebarInput,
+    useSidebar,
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
-import { cn } from '@/utils/utils'
 import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import * as React from 'react'
@@ -163,6 +162,14 @@ function IconHelp(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <SidebarProvider defaultOpen>
+            <InsideSidebar>{children}</InsideSidebar>
+        </SidebarProvider>
+    )
+}
+
+function InsideSidebar({ children }: { children: React.ReactNode }) {
     const router = useRouter()
     const pathname = usePathname()
     const { lang } = useParams<{ lang: string }>()
@@ -247,6 +254,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         return match?.label ?? 'Account'
     }, [navItems, isActive])
 
+    const sidebar = useSidebar()
+
     if (loading) {
         return (
             <div className="bg-background text-foreground min-h-[60vh]">
@@ -272,7 +281,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     }
 
     return (
-        <SidebarProvider defaultOpen>
+        <>
             <div className="bg-background text-foreground">
                 <Sidebar
                     side="left"
@@ -370,7 +379,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                         </button>
                     </SidebarFooter>
                 </Sidebar>
-                <SidebarInset>
+
+                <div
+                    className={`transition-[ml] ${sidebar.open && !sidebar.isMobile ? 'ml-[231px]' : ''}`}
+                >
                     <header className="bg-background/80 supports-[backdrop-filter]:bg-background/60 border-border sticky top-0 z-20 border-b backdrop-blur">
                         <div className="flex h-14 items-center gap-3 px-4">
                             <SidebarTrigger className="border-border rounded-md border" />
@@ -403,8 +415,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     <main className="px-4 pt-6 pb-8">
                         <div className="mx-auto w-full max-w-6xl">{children}</div>
                     </main>
-                </SidebarInset>
+                </div>
             </div>
-        </SidebarProvider>
+        </>
     )
 }

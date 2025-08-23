@@ -11,11 +11,12 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import { cn } from '@/utils/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 type ShipmentEvent = {
     status?: string | null
@@ -96,8 +97,12 @@ function carrierCandidates(trackingCode: string) {
     ]
 }
 
-export default function Page({ params }: { params: { lang: string; trackingCode: string } }) {
-    const { lang, trackingCode } = params
+export default function Page({
+    params,
+}: {
+    params: Promise<{ lang: string; trackingCode: string }>
+}) {
+    const { lang, trackingCode } = React.use(params)
     const router = useRouter()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -116,7 +121,6 @@ export default function Page({ params }: { params: { lang: string; trackingCode:
             setError(null)
             try {
                 const sb = supabaseBrowser
-                // Attempt primary shipments table
                 const { data, error: err } = await sb
                     .from('shipments')
                     .select('*')
@@ -124,37 +128,7 @@ export default function Page({ params }: { params: { lang: string; trackingCode:
                     .limit(1)
                     .maybeSingle()
 
-                if (err && (err as any).code === '42P01') {
-                    // Table does not exist; fallback to orders table
-                    const { data: fallback, error: fallbackError } = await sb
-                        .from('orders')
-                        .select('*')
-                        .eq('shipping_tracking_code', trackingCode)
-                        .limit(1)
-                        .maybeSingle()
-
-                    if (fallback) {
-                        const mapped: Shipment = {
-                            id: fallback.id,
-                            order_id: fallback.id,
-                            tracking_code: fallback.shipping_tracking_code,
-                            carrier_code: null,
-                            carrier_name: fallback.shipping_carrier,
-                            carrier_tracking_url: fallback.shipping_carrier_url,
-                            latest_status: fallback.shipping_status,
-                            latest_status_at: fallback.shipping_status_at,
-                            events: fallback.shipping_events || null,
-                            origin_country: fallback.origin_country,
-                            destination_country: fallback.destination_country,
-                            updated_at: fallback.updated_at,
-                        }
-                        if (mounted) setShipment(mapped)
-                    } else if (fallbackError) {
-                        throw fallbackError
-                    } else if (!fallback) {
-                        if (mounted) setShipment(null)
-                    }
-                } else if (err) {
+                if (err) {
                     throw err
                 } else if (data) {
                     if (mounted) setShipment(data as unknown as Shipment)
@@ -219,6 +193,7 @@ export default function Page({ params }: { params: { lang: string; trackingCode:
                         RealizeIt
                     </Link>
                     <nav className="hidden gap-6 text-sm md:flex">
+                        {/* <ThemeToggle className="size-5" /> */}
                         <Link
                             href={`/${lang}/products`}
                             className="text-muted-foreground hover:text-foreground"

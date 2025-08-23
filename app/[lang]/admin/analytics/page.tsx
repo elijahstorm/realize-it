@@ -25,7 +25,7 @@ import {
     Area,
 } from 'recharts'
 
-type Params = { lang: string }
+type Params = Promise<{ lang: string }>
 
 type DateRange = { from: Date; to: Date }
 
@@ -122,7 +122,7 @@ const defaultAnalytics: AnalyticsData = {
 }
 
 export default function AnalyticsPage({ params }: { params: Params }) {
-    const { lang } = params
+    const { lang } = React.use(params)
     const router = useRouter()
 
     const [range, setRange] = useState<DateRange>(() => {
