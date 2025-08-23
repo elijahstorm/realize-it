@@ -9,6 +9,9 @@
         "lint": "eslint"
     },
     "dependencies": {
+        "@formatjs/intl-localematcher": "^0.6.1",
+        "@types/negotiator": "^0.6.4",
+        "negotiator": "^1.0.0",
         "next": "15.5.0",
         "openai": "4.21.0",
         "react": "19.1.0",
