@@ -27,12 +27,12 @@ interface ChatMessage {
     content: string
     timestamp: Date
     reasoning?: string
-    imageStatus?: 'generating' | 'complete' | 'error'
-    imageUrl?: string
-    imagePrompt?: string
-    imageError?: string
-    imageData?: string
-    partialIndex?: number
+    image_status?: 'generating' | 'complete' | 'error'
+    image_url?: string
+    image_prompt?: string
+    image_error?: string
+    image_data?: string
+    partial_index?: number
 }
 
 const DESIGN_PROMPTS = [
@@ -80,6 +80,13 @@ export default function Page({ params }: PageProps) {
                 .single()
             if (sessionErr) throw sessionErr
             setSession(sessionRow as DesignSession)
+            const { data: sessionMessages, error: messagesErr } = await supabase
+                .from('design_session_messages')
+                .select('*')
+                .eq('design_session_id', sessionId)
+                .order('created_at', { ascending: true })
+
+            if (messagesErr) throw messagesErr
 
             // Initialize with welcome message
             const welcomeMessage: ChatMessage = {
@@ -99,7 +106,10 @@ What kind of design are you looking to create?`,
                 reasoning:
                     'Introducing the AI design assistant capabilities and setting expectations for collaborative design process.',
             }
-            setMessages([welcomeMessage])
+            setMessages([
+                welcomeMessage,
+                ...sessionMessages.map((msg) => ({ ...msg, timestamp: new Date(msg.created_at) })),
+            ])
         } catch (e: any) {
             setLoadError(e?.message || 'Failed to load design session.')
         } finally {
@@ -127,6 +137,24 @@ What kind of design are you looking to create?`,
             setIsStreaming(true)
 
             try {
+                const { data: possiblyIncompleteMessage, error } = await supabase
+                    .from('design_session_messages')
+                    .insert({
+                        design_session_id: sessionId,
+                        role: userMessage.role,
+                        content: userMessage.content,
+                        reasoning: null,
+                        image_status: null,
+                        image_data: null,
+                        image_url: null,
+                        image_prompt: null,
+                        partial_index: null,
+                    })
+                    .select()
+                    .single()
+
+                if (error) console.error(error)
+
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
@@ -204,16 +232,21 @@ What kind of design are you looking to create?`,
 
                                     const { error } = await supabase
                                         .from('design_session_messages')
-                                        .insert({
-                                            design_session_id: sessionId,
-                                            content: data.content,
-                                            reasoning: data.reasoning || null,
-                                            image_status: 'complete',
-                                            image_data: data.image_data || null,
-                                            image_url: data.image_url || null,
-                                            image_prompt: data.image_prompt || null,
-                                            partial_index: null,
-                                        })
+                                        .upsert(
+                                            {
+                                                id: possiblyIncompleteMessage?.id,
+                                                design_session_id: sessionId,
+                                                role: 'assistant',
+                                                content: data.content,
+                                                reasoning: data.reasoning || null,
+                                                image_status: 'complete',
+                                                image_data: null,
+                                                image_url: data.image_url || null,
+                                                image_prompt: data.image_prompt || null,
+                                                partial_index: null,
+                                            },
+                                            { onConflict: 'id' }
+                                        )
 
                                     if (error) console.error(error)
 
@@ -230,8 +263,8 @@ What kind of design are you looking to create?`,
                                     switch (data.image_status) {
                                         case 'gen':
                                             // Set generating state
-                                            assistantMessage.imageStatus = 'generating'
-                                            assistantMessage.imagePrompt = data.image_prompt
+                                            assistantMessage.image_status = 'generating'
+                                            assistantMessage.image_prompt = data.image_prompt
                                             setMessages((prev) =>
                                                 prev.map((m) =>
                                                     m.id === assistantMessage.id
@@ -243,10 +276,10 @@ What kind of design are you looking to create?`,
 
                                         case 'partial':
                                             // Update with partial image
-                                            assistantMessage.imageStatus = 'generating'
-                                            assistantMessage.imageData = data.image_data
-                                            assistantMessage.partialIndex = data.partial_index
-                                            assistantMessage.imagePrompt = data.image_prompt
+                                            assistantMessage.image_status = 'generating'
+                                            assistantMessage.image_data = data.image_data
+                                            assistantMessage.partial_index = data.partial_index
+                                            assistantMessage.image_prompt = data.image_prompt
                                             setMessages((prev) =>
                                                 prev.map((m) =>
                                                     m.id === assistantMessage.id
@@ -258,20 +291,21 @@ What kind of design are you looking to create?`,
 
                                         case 'done':
                                             // Set completed state with final image
-                                            assistantMessage.imageStatus = 'complete'
-                                            assistantMessage.imageData = data.image_data
-                                            assistantMessage.imageUrl = data.image_url
-                                            assistantMessage.imagePrompt = data.image_prompt
-                                            delete assistantMessage.partialIndex
+                                            assistantMessage.image_status = 'complete'
+                                            assistantMessage.image_data = data.image_data
+                                            assistantMessage.image_url = data.image_url
+                                            assistantMessage.image_prompt = data.image_prompt
+                                            delete assistantMessage.partial_index
 
                                             const { error } = await supabase
                                                 .from('design_session_messages')
                                                 .insert({
                                                     design_session_id: sessionId,
+                                                    role: 'assistant',
                                                     content: data.content,
                                                     reasoning: data.reasoning || null,
                                                     image_status: 'complete',
-                                                    image_data: data.image_data || null,
+                                                    image_data: null,
                                                     image_url: data.image_url || null,
                                                     image_prompt: data.image_prompt || null,
                                                     partial_index: null,
@@ -290,8 +324,8 @@ What kind of design are you looking to create?`,
 
                                         case 'error':
                                             // Set error state
-                                            assistantMessage.imageStatus = 'error'
-                                            assistantMessage.imageError = data.image_error
+                                            assistantMessage.image_status = 'error'
+                                            assistantMessage.image_error = data.image_error
                                             setMessages((prev) =>
                                                 prev.map((m) =>
                                                     m.id === assistantMessage.id
@@ -453,24 +487,24 @@ What kind of design are you looking to create?`,
                                         <div className="whitespace-pre-wrap">{message.content}</div>
 
                                         {/* Image Display Section */}
-                                        {(message.imageStatus || message.imagePrompt) && (
+                                        {(message.image_status || message.image_prompt) && (
                                             <div className="mt-4 rounded-lg border bg-gray-50/50 p-3">
                                                 <div className="mb-2 flex items-center gap-2">
                                                     <span className="text-sm font-medium text-gray-700">
                                                         Generated Image
                                                     </span>
-                                                    {message.imageStatus === 'generating' && (
+                                                    {message.image_status === 'generating' && (
                                                         <div className="flex items-center gap-1 text-xs text-blue-600">
                                                             <div className="h-3 w-3 animate-spin rounded-full border border-blue-600 border-t-transparent"></div>
                                                             Generating...
                                                         </div>
                                                     )}
-                                                    {message.imageStatus === 'complete' && (
+                                                    {message.image_status === 'complete' && (
                                                         <span className="rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
                                                             ✓ Complete
                                                         </span>
                                                     )}
-                                                    {message.imageStatus === 'error' && (
+                                                    {message.image_status === 'error' && (
                                                         <span className="rounded bg-red-100 px-2 py-0.5 text-xs text-red-600">
                                                             ✗ Failed
                                                         </span>
@@ -478,8 +512,8 @@ What kind of design are you looking to create?`,
                                                 </div>
 
                                                 {/* Image Content */}
-                                                {message.imageStatus === 'generating' &&
-                                                    !message.imageData && (
+                                                {message.image_status === 'generating' &&
+                                                    !message.image_data && (
                                                         <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-200">
                                                             <div className="text-center text-gray-500">
                                                                 <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-transparent"></div>
@@ -490,14 +524,14 @@ What kind of design are you looking to create?`,
                                                         </div>
                                                     )}
 
-                                                {message.imageStatus === 'generating' &&
-                                                    message.imageData && (
+                                                {message.image_status === 'generating' &&
+                                                    message.image_data && (
                                                         <div className="space-y-2">
                                                             <div className="relative">
                                                                 <img
-                                                                    src={`data:image/png;base64,${message.imageData}`}
+                                                                    src={`data:image/png;base64,${message.image_data}`}
                                                                     alt={
-                                                                        message.imagePrompt ||
+                                                                        message.image_prompt ||
                                                                         'Generated image (partial)'
                                                                     }
                                                                     className="w-full rounded-lg opacity-75 shadow-sm"
@@ -505,9 +539,9 @@ What kind of design are you looking to create?`,
                                                                 <div className="absolute top-2 right-2 flex items-center gap-1 rounded bg-blue-600/90 px-2 py-1 text-xs text-white">
                                                                     <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
                                                                     Partial{' '}
-                                                                    {message.partialIndex !==
+                                                                    {message.partial_index !==
                                                                     undefined
-                                                                        ? `${message.partialIndex + 1}`
+                                                                        ? `${message.partial_index + 1}`
                                                                         : ''}
                                                                 </div>
                                                             </div>
@@ -517,13 +551,13 @@ What kind of design are you looking to create?`,
                                                         </div>
                                                     )}
 
-                                                {message.imageStatus === 'complete' &&
-                                                    message.imageData && (
+                                                {message.image_status === 'complete' &&
+                                                    message.image_data && (
                                                         <div className="space-y-2">
                                                             <img
-                                                                src={`data:image/png;base64,${message.imageData}`}
+                                                                src={`data:image/png;base64,${message.image_data}`}
                                                                 alt={
-                                                                    message.imagePrompt ||
+                                                                    message.image_prompt ||
                                                                     'Generated image'
                                                                 }
                                                                 className="w-full rounded-lg shadow-sm"
@@ -536,7 +570,7 @@ What kind of design are you looking to create?`,
                                                                             document.createElement(
                                                                                 'a'
                                                                             )
-                                                                        link.href = `data:image/png;base64,${message.imageData}`
+                                                                        link.href = `data:image/png;base64,${message.image_data}`
                                                                         link.download =
                                                                             'generated-image.png'
                                                                         link.click()
@@ -551,13 +585,13 @@ What kind of design are you looking to create?`,
                                                         </div>
                                                     )}
 
-                                                {message.imageStatus === 'error' && (
+                                                {message.image_status === 'error' && (
                                                     <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                                                         <p className="mb-1 text-sm font-medium text-red-800">
                                                             Image generation failed
                                                         </p>
                                                         <p className="text-xs text-red-600">
-                                                            {message.imageError ||
+                                                            {message.image_error ||
                                                                 'Unknown error occurred'}
                                                         </p>
                                                         <button className="mt-2 rounded bg-red-100 px-2 py-1 text-xs text-red-700 transition-colors hover:bg-red-200">
@@ -567,13 +601,13 @@ What kind of design are you looking to create?`,
                                                 )}
 
                                                 {/* Image Prompt Details */}
-                                                {message.imagePrompt && (
+                                                {message.image_prompt && (
                                                     <details className="mt-3 text-xs opacity-70">
                                                         <summary className="cursor-pointer font-medium text-gray-600">
                                                             Image Prompt
                                                         </summary>
                                                         <div className="mt-2 border-l-2 border-gray-300 pl-2 text-gray-600">
-                                                            {message.imagePrompt}
+                                                            {message.image_prompt}
                                                         </div>
                                                     </details>
                                                 )}

@@ -113,7 +113,7 @@ export async function POST(req: Request) {
                                     size: '1024x1024',
                                 })
 
-                                if (!result.data[0].b64_json) {
+                                if (!result?.data || !result?.data[0]?.b64_json) {
                                     throw new Error('OpenAI did not return b64_json for the image')
                                 }
 
