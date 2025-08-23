@@ -547,15 +547,15 @@ export default function AdminProductsMappingPage({
                         />
                     </div>
                     <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                        <Link href={`/${lang}//help`} className="hover:underline">
+                        <Link href={`/${lang}/help`} className="hover:underline">
                             Help
                         </Link>
                         <span>•</span>
-                        <Link href={`/${lang}//legal/ip-policy`} className="hover:underline">
+                        <Link href={`/${lang}/legal/ip-policy`} className="hover:underline">
                             IP Policy
                         </Link>
                         <span>•</span>
-                        <Link href={`/${lang}//about`} className="hover:underline">
+                        <Link href={`/${lang}/about`} className="hover:underline">
                             About
                         </Link>
                         <span>•</span>
@@ -1121,7 +1121,7 @@ export default function AdminProductsMappingPage({
                         </div>
                     </Link>
                     <Link
-                        href={`/${lang}//contact`}
+                        href={`/${lang}/contact`}
                         className="border-border bg-card hover:bg-accent rounded-lg border p-4"
                     >
                         <div className="text-sm font-medium">Contact</div>

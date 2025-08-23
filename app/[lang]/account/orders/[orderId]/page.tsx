@@ -324,14 +324,14 @@ export default function OrderDetailPage({ params }: PageProps) {
                 </Alert>
                 <div className="text-muted-foreground mt-6 flex items-center gap-3 text-sm">
                     <Link
-                        href={`/${lang}//help`}
+                        href={`/${lang}/help`}
                         className="hover:text-foreground underline underline-offset-4"
                     >
                         Help
                     </Link>
                     <span>•</span>
                     <Link
-                        href={`/${lang}//contact`}
+                        href={`/${lang}/contact`}
                         className="hover:text-foreground underline underline-offset-4"
                     >
                         Contact support
@@ -382,7 +382,7 @@ export default function OrderDetailPage({ params }: PageProps) {
                         Reorder
                     </button>
                     <Link
-                        href={`/${lang}//contact?order=${encodeURIComponent(orderId)}`}
+                        href={`/${lang}/contact?order=${encodeURIComponent(orderId)}`}
                         className="bg-secondary text-secondary-foreground focus:ring-secondary inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow hover:opacity-90 focus:ring-2 focus:outline-none"
                     >
                         Contact support
@@ -414,7 +414,7 @@ export default function OrderDetailPage({ params }: PageProps) {
                         <AlertDescription>
                             {error} If this persists, please
                             <Link
-                                href={`/${lang}//contact`}
+                                href={`/${lang}/contact`}
                                 className="ml-1 underline underline-offset-4"
                             >
                                 contact support
@@ -612,7 +612,7 @@ export default function OrderDetailPage({ params }: PageProps) {
                                         Not available yet. We’ll email you when tracking is ready.
                                         See
                                         <Link
-                                            href={`/${lang}//help`}
+                                            href={`/${lang}/help`}
                                             className="hover:text-foreground ml-1 underline underline-offset-4"
                                         >
                                             Help
@@ -676,14 +676,14 @@ export default function OrderDetailPage({ params }: PageProps) {
                 <p className="text-muted-foreground text-sm">
                     Visit our
                     <Link
-                        href={`/${lang}//help`}
+                        href={`/${lang}/help`}
                         className="hover:text-foreground mx-1 underline underline-offset-4"
                     >
                         Help Center
                     </Link>
                     or
                     <Link
-                        href={`/${lang}//contact?order=${encodeURIComponent(orderId)}`}
+                        href={`/${lang}/contact?order=${encodeURIComponent(orderId)}`}
                         className="hover:text-foreground ml-1 underline underline-offset-4"
                     >
                         contact support

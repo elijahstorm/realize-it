@@ -362,7 +362,7 @@ export default function BillingPage() {
                                 <li>
                                     <Link
                                         className="text-primary hover:text-primary/80 underline underline-offset-4"
-                                        href={`/${lang}//help`}
+                                        href={`/${lang}/help`}
                                     >
                                         Billing & payments FAQ
                                     </Link>
@@ -370,7 +370,7 @@ export default function BillingPage() {
                                 <li>
                                     <Link
                                         className="text-primary hover:text-primary/80 underline underline-offset-4"
-                                        href={`/${lang}//contact`}
+                                        href={`/${lang}/contact`}
                                     >
                                         Contact support
                                     </Link>
@@ -380,7 +380,7 @@ export default function BillingPage() {
                             <div className="text-muted-foreground space-y-1 text-xs">
                                 <div>
                                     <Link
-                                        href={`/${lang}//legal/terms`}
+                                        href={`/${lang}/legal/terms`}
                                         className="underline underline-offset-4"
                                     >
                                         Terms of Service
@@ -388,7 +388,7 @@ export default function BillingPage() {
                                 </div>
                                 <div>
                                     <Link
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                         className="underline underline-offset-4"
                                     >
                                         Privacy Policy
@@ -396,7 +396,7 @@ export default function BillingPage() {
                                 </div>
                                 <div>
                                     <Link
-                                        href={`/${lang}//legal/ip-policy`}
+                                        href={`/${lang}/legal/ip-policy`}
                                         className="underline underline-offset-4"
                                     >
                                         IP Policy

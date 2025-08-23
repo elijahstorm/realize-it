@@ -36,9 +36,9 @@ export default function ContactPage() {
             account: `${base}/account`,
             signin: `${base}/sign-in`,
             signup: `${base}/sign-up`,
-            terms: `${base}//legal/terms`,
-            privacy: `${base}//legal/privacy`,
-            ip: `${base}//legal/ip-policy`,
+            terms: `${base}/legal/terms`,
+            privacy: `${base}/legal/privacy`,
+            ip: `${base}/legal/ip-policy`,
             trackSample: `${base}/track/TRACK123`,
             admin: `${base}/admin`,
         }

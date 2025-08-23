@@ -126,10 +126,10 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             <Link href={`/${lang}/cart`} className="hover:text-primary">
                                 Cart
                             </Link>
-                            <Link href={`/${lang}//about`} className="hover:text-primary">
+                            <Link href={`/${lang}/about`} className="hover:text-primary">
                                 About
                             </Link>
-                            <Link href={`/${lang}//help`} className="hover:text-primary">
+                            <Link href={`/${lang}/help`} className="hover:text-primary">
                                 Help
                             </Link>
                         </nav>
@@ -181,22 +181,19 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                         </div>
                         <Separator className="my-8" />
                         <div className="text-muted-foreground grid grid-cols-2 gap-2 text-xs">
-                            <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                            <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                                 Terms
                             </Link>
-                            <Link
-                                href={`/${lang}//legal/privacy`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                                 Privacy
                             </Link>
                             <Link
-                                href={`/${lang}//legal/ip-policy`}
+                                href={`/${lang}/legal/ip-policy`}
                                 className="hover:text-foreground"
                             >
                                 IP Policy
                             </Link>
-                            <Link href={`/${lang}//contact`} className="hover:text-foreground">
+                            <Link href={`/${lang}/contact`} className="hover:text-foreground">
                                 Contact
                             </Link>
                         </div>
@@ -356,14 +353,14 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             <p>
                                 By continuing, you agree to our{' '}
                                 <Link
-                                    href={`/${lang}//legal/terms`}
+                                    href={`/${lang}/legal/terms`}
                                     className="hover:text-foreground underline"
                                 >
                                     Terms
                                 </Link>{' '}
                                 and{' '}
                                 <Link
-                                    href={`/${lang}//legal/privacy`}
+                                    href={`/${lang}/legal/privacy`}
                                     className="hover:text-foreground underline"
                                 >
                                     Privacy Policy
@@ -385,7 +382,7 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                             >
                                 Account settings
                             </Link>
-                            <Link href={`/${lang}//help`} className="hover:text-foreground">
+                            <Link href={`/${lang}/help`} className="hover:text-foreground">
                                 Get help
                             </Link>
                         </div>
@@ -400,13 +397,13 @@ export default function SignInPage({ params }: { params: { lang: string } }) {
                         <span>RealizeIt © {new Date().getFullYear()}</span>
                     </div>
                     <nav className="flex flex-wrap items-center gap-4">
-                        <Link href={`/${lang}//about`} className="hover:text-foreground">
+                        <Link href={`/${lang}/about`} className="hover:text-foreground">
                             About
                         </Link>
-                        <Link href={`/${lang}//contact`} className="hover:text-foreground">
+                        <Link href={`/${lang}/contact`} className="hover:text-foreground">
                             Contact
                         </Link>
-                        <Link href={`/${lang}//help`} className="hover:text-foreground">
+                        <Link href={`/${lang}/help`} className="hover:text-foreground">
                             Help
                         </Link>
                         <Link href={`/${lang}/admin`} className="hover:text-foreground">

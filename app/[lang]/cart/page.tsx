@@ -207,7 +207,7 @@ export default function CartPage() {
                         </Link>
                         <span className="text-muted-foreground">·</span>
                         <Link
-                            href={`/${lang}//about`}
+                            href={`/${lang}/about`}
                             className="text-muted-foreground hover:text-foreground hover:underline"
                         >
                             About
@@ -591,7 +591,7 @@ export default function CartPage() {
                                     {locale === 'ko-KR' ? '디자인 추가' : 'Add more designs'}
                                 </Link>
                                 <Link
-                                    href={`/${lang}//contact`}
+                                    href={`/${lang}/contact`}
                                     className="text-muted-foreground hover:text-foreground ml-auto text-sm hover:underline"
                                 >
                                     {locale === 'ko-KR' ? '문의하기' : 'Contact us'}
@@ -674,15 +674,12 @@ export default function CartPage() {
                                         {locale === 'ko-KR' ? '전체 주문' : 'All orders'}
                                     </Link>
                                     <span>·</span>
-                                    <Link
-                                        href={`/${lang}//legal/terms`}
-                                        className="hover:underline"
-                                    >
+                                    <Link href={`/${lang}/legal/terms`} className="hover:underline">
                                         {locale === 'ko-KR' ? '이용 약관' : 'Terms'}
                                     </Link>
                                     <span>·</span>
                                     <Link
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                         className="hover:underline"
                                     >
                                         {locale === 'ko-KR' ? '개인정보처리방침' : 'Privacy'}

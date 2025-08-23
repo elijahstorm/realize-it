@@ -11,6 +11,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
+import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -72,19 +73,41 @@ export default function DesignEntryPage() {
             }
             try {
                 setSubmitting(true)
-                const sessionId = safeUuid()
                 try {
-                    const payload = { prompt: p, styleHints: s, createdAt: Date.now(), lang }
-                    sessionStorage.setItem(`design-session:${sessionId}`, JSON.stringify(payload))
-                } catch {}
-                const query = new URLSearchParams()
-                query.set('q', p)
-                if (s) query.set('style', s)
-                toast({
-                    title: 'Starting your design session...',
-                    description: 'Generating design brief and preparing options.',
-                })
-                router.push(`/${lang}/design/s/${sessionId}?${query.toString()}`)
+                    const supabase = supabaseBrowser
+                    const { data: userRes, error: userErr } = await supabase.auth.getUser()
+                    if (!userRes?.user || userErr) {
+                        throw userErr || 'User not logged in'
+                    }
+                    const { user } = userRes
+
+                    const payload = {
+                        prompt: p,
+                        style_hints: s,
+                        status: 'pending',
+                        language: lang,
+                        user_id: user.id,
+                    }
+
+                    const { data: sessionRow, error: insertErr } = await supabase
+                        .from('design_sessions')
+                        .insert(payload)
+                        .select()
+                        .single()
+
+                    if (insertErr) throw insertErr
+
+                    const query = new URLSearchParams()
+                    query.set('q', p)
+                    if (s) query.set('style', s)
+                    toast({
+                        title: 'Starting your design session...',
+                        description: 'Generating design brief and preparing options.',
+                    })
+                    router.push(`/${lang}/design/s/${sessionRow.id}?${query.toString()}`)
+                } catch (e) {
+                    console.error(e)
+                }
             } finally {
                 setSubmitting(false)
             }
@@ -156,19 +179,19 @@ export default function DesignEntryPage() {
                                     <span className="ml-2 inline-flex gap-2">
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}//legal/terms`}
+                                            href={`/${lang}/legal/terms`}
                                         >
                                             Terms
                                         </Link>
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}//legal/ip-policy`}
+                                            href={`/${lang}/legal/ip-policy`}
                                         >
                                             IP Policy
                                         </Link>
                                         <Link
                                             className="hover:text-foreground underline"
-                                            href={`/${lang}//legal/privacy`}
+                                            href={`/${lang}/legal/privacy`}
                                         >
                                             Privacy
                                         </Link>
@@ -408,19 +431,19 @@ export default function DesignEntryPage() {
                                     <div className="text-muted-foreground">Useful links</div>
                                     <div className="flex flex-wrap gap-3">
                                         <Link
-                                            href={`/${lang}//about`}
+                                            href={`/${lang}/about`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             About
                                         </Link>
                                         <Link
-                                            href={`/${lang}//help`}
+                                            href={`/${lang}/help`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             Help
                                         </Link>
                                         <Link
-                                            href={`/${lang}//contact`}
+                                            href={`/${lang}/contact`}
                                             className="underline-offset-4 hover:underline"
                                         >
                                             Contact

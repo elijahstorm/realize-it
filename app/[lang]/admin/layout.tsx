@@ -139,7 +139,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         { label: 'Checkout', href: `/${lang}/checkout` },
         { label: 'Orders', href: `/${lang}/orders` },
         { label: 'Account', href: `/${lang}/account` },
-        { label: 'Help', href: `/${lang}//help` },
+        { label: 'Help', href: `/${lang}/help` },
     ]
 
     const currentLabel = React.useMemo(() => {
@@ -178,7 +178,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <span>•</span>
                         <Link
                             className="hover:text-foreground underline underline-offset-4"
-                            href={`/${lang}//help`}
+                            href={`/${lang}/help`}
                         >
                             Help
                         </Link>
@@ -211,7 +211,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             Go to Account
                         </Link>
                         <Link
-                            href={`/${lang}//contact`}
+                            href={`/${lang}/contact`}
                             className="hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium"
                         >
                             Contact Support
@@ -377,13 +377,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <ThemeToggle />
 
                         <Link
-                            href={`/${lang}//help`}
+                            href={`/${lang}/help`}
                             className="hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 text-sm"
                         >
                             Help
                         </Link>
                         <Link
-                            href={`/${lang}//about`}
+                            href={`/${lang}/about`}
                             className="hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 text-sm"
                         >
                             About
@@ -402,26 +402,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <footer className="bg-muted/30 text-muted-foreground border-t p-4 text-xs">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-3">
-                            <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                            <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                                 Terms
                             </Link>
                             <span>•</span>
-                            <Link
-                                href={`/${lang}//legal/privacy`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                                 Privacy
                             </Link>
                             <span>•</span>
                             <Link
-                                href={`/${lang}//legal/ip-policy`}
+                                href={`/${lang}/legal/ip-policy`}
                                 className="hover:text-foreground"
                             >
                                 IP Policy
                             </Link>
                         </div>
                         <div>
-                            <Link href={`/${lang}//contact`} className="hover:text-foreground">
+                            <Link href={`/${lang}/contact`} className="hover:text-foreground">
                                 Contact
                             </Link>
                         </div>

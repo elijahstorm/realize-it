@@ -1,25 +1,18 @@
 'use client'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from '@/components/ui/carousel'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import { cn } from '@/utils/utils'
-import Image from 'next/image'
+import { Send, Sparkles, ImageIcon, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 
 interface PageProps {
-    params: { lang: string; sessionId: string }
+    params: Promise<{ lang: string; sessionId: string }>
 }
 
 type DesignSession = {
@@ -29,43 +22,49 @@ type DesignSession = {
     language?: string | null
 }
 
-type DesignOption = {
+type ChatMessage = {
     id: string
-    title?: string | null
-    description?: string | null
-    primary_image_url?: string | null
-    // Optional mapping from product slug to a product-specific mockup image URL
-    mockups?: Record<string, string> | null
+    role: 'user' | 'assistant'
+    content: string
+    timestamp: Date
+    images?: string[]
+    reasoning?: string
+    image_gen_prompt?: string
 }
 
-const PRODUCT_PREVIEWS: { slug: string; name: string; href: (lang: string) => string }[] = [
-    { slug: 't-shirt', name: 'T‑Shirt', href: (lang) => `/${lang}/products/t-shirt` },
-    { slug: 'hoodie', name: 'Hoodie', href: (lang) => `/${lang}/products/hoodie` },
-    { slug: 'mug', name: 'Mug', href: (lang) => `/${lang}/products/mug` },
-    { slug: 'tote', name: 'Tote', href: (lang) => `/${lang}/products/tote` },
-    { slug: 'phone-case', name: 'Phone Case', href: (lang) => `/${lang}/products/phone-case` },
+const DESIGN_PROMPTS = [
+    'Help me design a trendy t-shirt for Gen Z',
+    'I need a professional design for corporate merchandise',
+    'Create something minimalist and modern',
+    'Design something inspired by nature',
+    'I want something bold and artistic',
 ]
 
 export default function Page({ params }: PageProps) {
-    const { sessionId, lang } = params
+    const { sessionId, lang } = React.use(params)
     const router = useRouter()
     const { toast } = useToast()
     const supabase = useMemo(() => supabaseBrowser, [])
+    const messagesEndRef = useRef<HTMLDivElement>(null)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const [isLoading, setIsLoading] = useState(true)
-    const [isSavingDraft, setIsSavingDraft] = useState(false)
     const [loadError, setLoadError] = useState<string | null>(null)
     const [authUserId, setAuthUserId] = useState<string | null>(null)
     const [session, setSession] = useState<DesignSession | null>(null)
-    const [options, setOptions] = useState<DesignOption[]>([])
-    const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null)
-    // Track chosen product preview per option
-    const [optionPreviewProduct, setOptionPreviewProduct] = useState<Record<string, string>>({})
+    const [messages, setMessages] = useState<ChatMessage[]>([])
+    const [inputValue, setInputValue] = useState('')
+    const [isStreaming, setIsStreaming] = useState(false)
+    const [isGeneratingImages, setIsGeneratingImages] = useState(false)
+    const [generatedImages, setGeneratedImages] = useState<string[]>([])
 
-    const selectedOption = useMemo(
-        () => options.find((o) => o.id === selectedOptionId) || null,
-        [options, selectedOptionId]
-    )
+    const scrollToBottom = useCallback(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [])
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages, scrollToBottom])
 
     const load = useCallback(async () => {
         setIsLoading(true)
@@ -82,24 +81,27 @@ export default function Page({ params }: PageProps) {
             if (sessionErr) throw sessionErr
             setSession(sessionRow as DesignSession)
 
-            const { data: optionRows, error: optErr } = await supabase
-                .from('design_options')
-                .select('id,title,description,primary_image_url,mockups')
-                .eq('session_id', sessionId)
-                .order('created_at', { ascending: true })
-                .limit(3)
-            if (optErr) throw optErr
+            // Initialize with welcome message
+            const welcomeMessage: ChatMessage = {
+                id: 'welcome',
+                role: 'assistant',
+                content: `Hello! I'm your AI design assistant. I'll help you create the perfect design by understanding your vision, analyzing trends, and refining your ideas together. 
 
-            const list = (optionRows || []) as DesignOption[]
-            setOptions(list)
-            if (list.length > 0) {
-                setSelectedOptionId(list[0].id)
-                const nextPreview: Record<string, string> = {}
-                for (const o of list) nextPreview[o.id] = PRODUCT_PREVIEWS[0].slug
-                setOptionPreviewProduct(nextPreview)
+Let's start by discussing what you have in mind. I can help with:
+• Style and trend analysis
+• Creative refinement and variations  
+• Storytelling and messaging
+• Design appropriateness and cultural sensitivity
+• Style matching and complementary elements
+
+What kind of design are you looking to create?`,
+                timestamp: new Date(),
+                reasoning:
+                    'Introducing the AI design assistant capabilities and setting expectations for collaborative design process.',
             }
+            setMessages([welcomeMessage])
         } catch (e: any) {
-            setLoadError(e?.message || 'Failed to load design options.')
+            setLoadError(e?.message || 'Failed to load design session.')
         } finally {
             setIsLoading(false)
         }
@@ -109,91 +111,200 @@ export default function Page({ params }: PageProps) {
         load()
     }, [load])
 
-    const imageForOptionAndProduct = useCallback((o: DesignOption, productSlug: string) => {
-        const byProduct = o?.mockups?.[productSlug]
-        return byProduct || o?.primary_image_url || ''
-    }, [])
+    const sendMessage = useCallback(
+        async (content: string) => {
+            if (!content.trim() || isStreaming) return
 
-    const handleRequestVariations = useCallback(() => {
-        if (!selectedOptionId) {
-            toast({
-                title: 'Select an option',
-                description: 'Please choose a design option to request variations.',
-                variant: 'default',
-            })
-            return
-        }
-        router.push(
-            `/${lang}/design/s/${sessionId}/variations?base=${encodeURIComponent(selectedOptionId)}`
-        )
-    }, [lang, router, selectedOptionId, sessionId, toast])
-
-    const handleSelectProduct = useCallback(() => {
-        if (!selectedOptionId) {
-            toast({
-                title: 'Select an option',
-                description: 'Please choose a design option to continue.',
-            })
-            return
-        }
-        router.push(
-            `/${lang}/design/s/${sessionId}/select-product?design=${encodeURIComponent(selectedOptionId)}`
-        )
-    }, [lang, router, selectedOptionId, sessionId, toast])
-
-    const handleContinueLater = useCallback(async () => {
-        try {
-            setIsSavingDraft(true)
-            if (authUserId) {
-                await supabase
-                    .from('design_sessions')
-                    .update({ status: 'draft' })
-                    .eq('id', sessionId)
+            const userMessage: ChatMessage = {
+                id: `user-${Date.now()}`,
+                role: 'user',
+                content: content.trim(),
+                timestamp: new Date(),
             }
-        } catch (_) {
-            // best effort only
-        } finally {
-            setIsSavingDraft(false)
-            router.push(`/${lang}/account/orders`)
-        }
-    }, [authUserId, lang, router, sessionId, supabase])
 
-    const Step = ({ idx, label, active }: { idx: number; label: string; active?: boolean }) => (
-        <div
-            className={cn(
-                'flex items-center gap-2 rounded-full border px-3 py-1 text-xs md:text-sm',
-                active
-                    ? 'bg-primary text-primary-foreground border-transparent'
-                    : 'bg-muted text-muted-foreground border-transparent'
-            )}
-        >
-            <span
-                className={cn(
-                    'inline-flex h-5 w-5 items-center justify-center rounded-full',
-                    active ? 'bg-primary-foreground/20' : 'bg-background/50'
-                )}
-            >
-                {idx}
-            </span>
-            <span className="font-medium">{label}</span>
-        </div>
+            setMessages((prev) => [...prev, userMessage])
+            setInputValue('')
+            setIsStreaming(true)
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: [...messages, userMessage].map((m) => ({
+                            role: m.role,
+                            content: m.content,
+                        })),
+                        context: {
+                            sessionId,
+                            type: 'design_assistant',
+                            prompt: session?.prompt,
+                        },
+                    }),
+                })
+
+                if (!response.ok) throw new Error('Failed to send message')
+
+                const reader = response.body?.getReader()
+                if (!reader) throw new Error('No response body')
+
+                let assistantMessage: ChatMessage = {
+                    id: `assistant-${Date.now()}`,
+                    role: 'assistant',
+                    content: '',
+                    timestamp: new Date(),
+                }
+
+                setMessages((prev) => [...prev, assistantMessage])
+
+                const decoder = new TextDecoder()
+                let buffer = ''
+
+                while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) break
+
+                    buffer += decoder.decode(value, { stream: true })
+                    const lines = buffer.split('\n')
+                    buffer = lines.pop() || ''
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6))
+
+                                if (data.done) {
+                                    break
+                                }
+
+                                if (data.error) {
+                                    throw new Error(data.error)
+                                }
+
+                                // Handle complete structured response
+                                if (data.content && data.reasoning && !data.partial) {
+                                    assistantMessage.content = data.content
+                                    assistantMessage.reasoning = data.reasoning
+                                    setMessages((prev) =>
+                                        prev.map((m) =>
+                                            m.id === assistantMessage.id
+                                                ? { ...assistantMessage }
+                                                : m
+                                        )
+                                    )
+                                }
+                                // Handle partial updates during streaming
+                                else if (data.content && data.partial) {
+                                    assistantMessage.content = data.content
+                                    setMessages((prev) =>
+                                        prev.map((m) =>
+                                            m.id === assistantMessage.id
+                                                ? { ...assistantMessage }
+                                                : m
+                                        )
+                                    )
+                                }
+                                // Handle incremental content (fallback)
+                                else if (data.content && !assistantMessage.content) {
+                                    assistantMessage.content = data.content
+                                    if (data.reasoning) {
+                                        assistantMessage.reasoning = data.reasoning
+                                    }
+                                    setMessages((prev) =>
+                                        prev.map((m) =>
+                                            m.id === assistantMessage.id
+                                                ? { ...assistantMessage }
+                                                : m
+                                        )
+                                    )
+                                }
+                            } catch (parseError) {
+                                console.warn('Failed to parse streaming data:', parseError)
+                                // Continue processing other chunks
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                toast({
+                    title: 'Error',
+                    description: 'Failed to send message. Please try again.',
+                    variant: 'destructive',
+                })
+            } finally {
+                setIsStreaming(false)
+            }
+        },
+        [isStreaming, messages, session?.prompt, sessionId, toast]
+    )
+
+    const generateImages = useCallback(async () => {
+        if (isGeneratingImages) return
+
+        setIsGeneratingImages(true)
+        try {
+            // This would integrate with your image generation API
+            // For now, simulating the process
+            await new Promise((resolve) => setTimeout(resolve, 3000))
+
+            // Mock generated images - replace with actual API call
+            const mockImages = [
+                '/api/placeholder/400/400',
+                '/api/placeholder/400/400',
+                '/api/placeholder/400/400',
+            ]
+            setGeneratedImages(mockImages)
+
+            toast({
+                title: 'Images Generated',
+                description: 'Your design variations are ready!',
+            })
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Failed to generate images. Please try again.',
+                variant: 'destructive',
+            })
+        } finally {
+            setIsGeneratingImages(false)
+        }
+    }, [isGeneratingImages, toast])
+
+    const handleSubmit = useCallback(
+        (e: React.FormEvent) => {
+            e.preventDefault()
+            sendMessage(inputValue)
+        },
+        [inputValue, sendMessage]
+    )
+
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                sendMessage(inputValue)
+            }
+        },
+        [inputValue, sendMessage]
     )
 
     return (
-        <div className="bg-background min-h-screen">
-            <div className="mx-auto w-full max-w-7xl px-4 pt-6 pb-24 md:px-6">
+        <div className="bg-background flex min-h-screen flex-col">
+            <div className="mx-auto w-full max-w-4xl px-4 pt-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                            Choose your design option
+                            AI Design Assistant
                         </h1>
                         <p className="text-muted-foreground mt-1 text-sm">
-                            Session {sessionId.slice(0, 8)} • {session?.status || 'processing'}
+                            Session {sessionId.slice(0, 8)} • {session?.status || 'active'}
                         </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <Link
-                            href={`/${lang}//help`}
+                            href={`/${lang}/help`}
                             className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground rounded-full border px-3 py-1.5 text-sm"
                         >
                             Help
@@ -204,504 +315,211 @@ export default function Page({ params }: PageProps) {
                         >
                             Cart
                         </Link>
-                        <Link
-                            href={`/${lang}/account/orders`}
-                            className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground rounded-full border px-3 py-1.5 text-sm"
-                        >
-                            My Orders
-                        </Link>
                     </div>
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center gap-2">
-                    <Step idx={1} label="Intent" />
-                    <Step idx={2} label="Options" active />
-                    <Step idx={3} label="Select Product" />
-                    <Step idx={4} label="Configure" />
-                    <Step idx={5} label="Approval" />
-                    <Step idx={6} label="Checkout" />
-                </div>
-
-                {session?.prompt ? (
+                {session?.prompt && (
                     <div className="bg-card text-muted-foreground mt-4 rounded-lg p-4 text-sm">
-                        <span className="text-foreground font-medium">Brief:</span> {session.prompt}
+                        <span className="text-foreground font-medium">Original Brief:</span>{' '}
+                        {session.prompt}
                     </div>
-                ) : null}
+                )}
 
                 <Separator className="my-6" />
+            </div>
 
-                {loadError ? (
+            {loadError ? (
+                <div className="mx-auto w-full max-w-4xl px-4">
                     <Alert className="border-destructive/50 bg-destructive/10 text-destructive">
-                        <AlertTitle>Could not load designs</AlertTitle>
+                        <AlertTitle>Could not load design session</AlertTitle>
                         <AlertDescription>
                             {loadError}
-                            <div className="mt-3 flex items-center gap-2">
-                                <button
-                                    onClick={load}
-                                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium"
-                                >
-                                    Retry
-                                </button>
-                                <Link
-                                    href={`/${lang}/design/s/${sessionId}/variations`}
-                                    className="hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-sm font-medium"
-                                >
-                                    Request Variations
-                                </Link>
-                            </div>
+                            <button
+                                onClick={load}
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 mt-3 inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium"
+                            >
+                                Retry
+                            </button>
                         </AlertDescription>
                     </Alert>
-                ) : null}
+                </div>
+            ) : null}
 
+            {/* Chat Messages Area */}
+            <div className="mx-auto w-full max-w-4xl flex-1 px-4">
                 {isLoading ? (
-                    <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="bg-card overflow-hidden rounded-xl border">
-                                <Skeleton className="aspect-square w-full" />
-                                <div className="space-y-3 p-4">
-                                    <Skeleton className="h-5 w-2/3" />
-                                    <Skeleton className="h-4 w-full" />
-                                    <Skeleton className="h-4 w-5/6" />
-                                    <div className="mt-4 flex gap-2">
-                                        <Skeleton className="h-8 w-20" />
-                                        <Skeleton className="h-8 w-24" />
-                                        <Skeleton className="h-8 w-28" />
-                                    </div>
+                    <div className="space-y-4">
+                        {Array.from({ length: 2 }).map((_, i) => (
+                            <div key={i} className="flex gap-3">
+                                <Skeleton className="h-8 w-8 rounded-full" />
+                                <div className="flex-1 space-y-2">
+                                    <Skeleton className="h-4 w-1/4" />
+                                    <Skeleton className="h-20 w-full" />
                                 </div>
                             </div>
                         ))}
                     </div>
-                ) : null}
-
-                {!isLoading && !loadError && options.length === 0 ? (
-                    <div className="mt-6">
-                        <Alert>
-                            <AlertTitle>No options yet</AlertTitle>
-                            <AlertDescription>
-                                We couldn&apos;t find generated options for this session.
-                                <div className="mt-3 flex flex-wrap items-center gap-2">
-                                    <Link
-                                        href={`/${lang}/design/s/${sessionId}/variations`}
-                                        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium"
-                                    >
-                                        Request Variations
-                                    </Link>
-                                    <Link
-                                        href={`/${lang}/products`}
-                                        className="hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-sm font-medium"
-                                    >
-                                        Browse Products
-                                    </Link>
+                ) : (
+                    <div className="space-y-6 pb-6">
+                        {messages.map((message) => (
+                            <div
+                                key={message.id}
+                                className={cn(
+                                    'flex gap-3',
+                                    message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                                        message.role === 'user'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground'
+                                    )}
+                                >
+                                    {message.role === 'user' ? (
+                                        'You'
+                                    ) : (
+                                        <Sparkles className="h-4 w-4" />
+                                    )}
                                 </div>
-                            </AlertDescription>
-                        </Alert>
-                    </div>
-                ) : null}
-
-                {!isLoading && options.length > 0 ? (
-                    <div className="mt-6">
-                        <div className="md:hidden">
-                            <Carousel opts={{ align: 'start', loop: true }}>
-                                <CarouselContent>
-                                    {options.map((o, idx) => {
-                                        const chosenProduct =
-                                            optionPreviewProduct[o.id] || PRODUCT_PREVIEWS[0].slug
-                                        const previewUrl = imageForOptionAndProduct(
-                                            o,
-                                            chosenProduct
-                                        )
-                                        const isSelected = selectedOptionId === o.id
-                                        return (
-                                            <CarouselItem key={o.id} className="basis-[85%] pl-2">
-                                                <div
-                                                    className={cn(
-                                                        'group bg-card relative overflow-hidden rounded-xl border',
-                                                        isSelected
-                                                            ? 'ring-primary ring-2'
-                                                            : 'hover:ring-ring hover:ring-1'
-                                                    )}
-                                                >
-                                                    <button
-                                                        onClick={() => setSelectedOptionId(o.id)}
-                                                        className="absolute inset-0 z-10"
-                                                        aria-label={`Select option ${idx + 1}`}
-                                                    />
-                                                    {previewUrl ? (
-                                                        // @ts-expect-warning @next/next/no-img/element - use img to avoid remote pattern restrictions
-                                                        <img
-                                                            src={previewUrl}
-                                                            alt={
-                                                                o.title ||
-                                                                `Design option ${idx + 1}`
-                                                            }
-                                                            className="aspect-square w-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="bg-muted aspect-square w-full" />
-                                                    )}
-                                                    <div className="p-4">
-                                                        <div className="flex items-start justify-between gap-2">
-                                                            <div>
-                                                                <h3 className="text-base leading-tight font-semibold">
-                                                                    {o.title || `Option ${idx + 1}`}
-                                                                </h3>
-                                                                {o.description ? (
-                                                                    <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
-                                                                        {o.description}
-                                                                    </p>
-                                                                ) : null}
-                                                            </div>
-                                                            {isSelected ? (
-                                                                <span className="bg-primary text-primary-foreground inline-flex h-6 shrink-0 items-center justify-center rounded-full px-2 text-xs font-medium">
-                                                                    Selected
-                                                                </span>
-                                                            ) : null}
-                                                        </div>
-                                                        <div className="mt-4">
-                                                            <div className="text-muted-foreground mb-2 text-xs">
-                                                                Preview on
-                                                            </div>
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {PRODUCT_PREVIEWS.map((p) => (
-                                                                    <button
-                                                                        key={p.slug}
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation()
-                                                                            setOptionPreviewProduct(
-                                                                                (prev) => ({
-                                                                                    ...prev,
-                                                                                    [o.id]: p.slug,
-                                                                                })
-                                                                            )
-                                                                        }}
-                                                                        className={cn(
-                                                                            'rounded-full border px-3 py-1 text-xs',
-                                                                            chosenProduct === p.slug
-                                                                                ? 'bg-secondary text-secondary-foreground border-transparent'
-                                                                                : 'hover:bg-accent hover:text-accent-foreground'
-                                                                        )}
-                                                                    >
-                                                                        {p.name}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                            <div className="mt-3">
-                                                                <Link
-                                                                    href={
-                                                                        PRODUCT_PREVIEWS.find(
-                                                                            (p) =>
-                                                                                p.slug ===
-                                                                                chosenProduct
-                                                                        )?.href(lang) ||
-                                                                        `/${lang}/products`
-                                                                    }
-                                                                    className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-2"
-                                                                >
-                                                                    View{' '}
-                                                                    {PRODUCT_PREVIEWS.find(
-                                                                        (p) =>
-                                                                            p.slug === chosenProduct
-                                                                    )?.name || 'product'}{' '}
-                                                                    details
-                                                                </Link>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </CarouselItem>
-                                        )
-                                    })}
-                                </CarouselContent>
-                                <div className="mt-3 flex items-center justify-end gap-2 pr-2">
-                                    <CarouselPrevious className="bg-card hover:bg-accent hover:text-accent-foreground static translate-y-0 rounded-full border p-2" />
-                                    <CarouselNext className="bg-card hover:bg-accent hover:text-accent-foreground static translate-y-0 rounded-full border p-2" />
-                                </div>
-                            </Carousel>
-                        </div>
-
-                        <div className="hidden md:grid md:grid-cols-3 md:gap-6">
-                            {options.map((o, idx) => {
-                                const chosenProduct =
-                                    optionPreviewProduct[o.id] || PRODUCT_PREVIEWS[0].slug
-                                const previewUrl = imageForOptionAndProduct(o, chosenProduct)
-                                const isSelected = selectedOptionId === o.id
-                                return (
+                                <div
+                                    className={cn(
+                                        'max-w-[80%] flex-1',
+                                        message.role === 'user' ? 'text-right' : 'text-left'
+                                    )}
+                                >
+                                    <div className="text-muted-foreground mb-1 text-xs">
+                                        {message.timestamp.toLocaleTimeString()}
+                                    </div>
                                     <div
-                                        key={o.id}
                                         className={cn(
-                                            'group bg-card relative overflow-hidden rounded-xl border',
-                                            isSelected
-                                                ? 'ring-primary ring-2'
-                                                : 'hover:ring-ring hover:ring-1'
+                                            'prose prose-sm max-w-none rounded-lg p-4',
+                                            message.role === 'user'
+                                                ? 'bg-primary text-primary-foreground ml-auto'
+                                                : 'bg-card border'
                                         )}
                                     >
-                                        <button
-                                            onClick={() => setSelectedOptionId(o.id)}
-                                            className="absolute inset-0 z-10"
-                                            aria-label={`Select option ${idx + 1}`}
-                                        />
-                                        {previewUrl ? (
-                                            <Image
-                                                src={previewUrl}
-                                                alt={o.title || `Design option ${idx + 1}`}
-                                                className="aspect-square w-full object-cover"
+                                        <div className="whitespace-pre-wrap">{message.content}</div>
+                                        {message.reasoning && (
+                                            <details className="mt-3 text-xs opacity-70">
+                                                <summary className="cursor-pointer font-medium">
+                                                    Reasoning
+                                                </summary>
+                                                <div className="mt-2 border-l-2 border-current/20 pl-2">
+                                                    {message.reasoning}
+                                                </div>
+                                                <div className="mt-2 border-l-2 border-current/20 pl-2">
+                                                    {message.image_gen_prompt ?? 'no image prompt'}
+                                                </div>
+                                            </details>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Generated Images Section */}
+                        {generatedImages.length > 0 && (
+                            <div className="bg-card rounded-lg border p-4">
+                                <h3 className="mb-3 flex items-center gap-2 font-semibold">
+                                    <ImageIcon className="h-4 w-4" />
+                                    Generated Design Variations
+                                </h3>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                    {generatedImages.map((img, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="bg-muted aspect-square overflow-hidden rounded-lg"
+                                        >
+                                            <img
+                                                src={img}
+                                                alt={`Design variation ${idx + 1}`}
+                                                className="h-full w-full object-cover"
                                             />
-                                        ) : (
-                                            <div className="bg-muted aspect-square w-full" />
-                                        )}
-                                        <div className="p-4">
-                                            <div className="flex items-start justify-between gap-2">
-                                                <div>
-                                                    <h3 className="text-base leading-tight font-semibold">
-                                                        {o.title || `Option ${idx + 1}`}
-                                                    </h3>
-                                                    {o.description ? (
-                                                        <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
-                                                            {o.description}
-                                                        </p>
-                                                    ) : null}
-                                                </div>
-                                                {isSelected ? (
-                                                    <span className="bg-primary text-primary-foreground inline-flex h-6 shrink-0 items-center justify-center rounded-full px-2 text-xs font-medium">
-                                                        Selected
-                                                    </span>
-                                                ) : null}
-                                            </div>
-                                            <div className="mt-4">
-                                                <div className="text-muted-foreground mb-2 text-xs">
-                                                    Preview on
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {PRODUCT_PREVIEWS.map((p) => (
-                                                        <button
-                                                            key={p.slug}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                setOptionPreviewProduct((prev) => ({
-                                                                    ...prev,
-                                                                    [o.id]: p.slug,
-                                                                }))
-                                                            }}
-                                                            className={cn(
-                                                                'rounded-full border px-3 py-1 text-xs',
-                                                                chosenProduct === p.slug
-                                                                    ? 'bg-secondary text-secondary-foreground border-transparent'
-                                                                    : 'hover:bg-accent hover:text-accent-foreground'
-                                                            )}
-                                                        >
-                                                            {p.name}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                                <div className="mt-3">
-                                                    <Link
-                                                        href={
-                                                            PRODUCT_PREVIEWS.find(
-                                                                (p) => p.slug === chosenProduct
-                                                            )?.href(lang) || `/${lang}/products`
-                                                        }
-                                                        className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-2"
-                                                    >
-                                                        View{' '}
-                                                        {PRODUCT_PREVIEWS.find(
-                                                            (p) => p.slug === chosenProduct
-                                                        )?.name || 'product'}{' '}
-                                                        details
-                                                    </Link>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-
-                        <div className="bg-card/95 supports-[backdrop-filter]:bg-card/70 sticky bottom-4 z-20 mt-8 rounded-xl border p-4 backdrop-blur">
-                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <div className="text-muted-foreground text-sm">
-                                        {selectedOption ? (
-                                            <>
-                                                Selected:{' '}
-                                                <span className="text-foreground font-medium">
-                                                    {selectedOption.title || 'Option'}
-                                                </span>
-                                            </>
-                                        ) : (
-                                            <>Select one of the options to continue</>
-                                        )}
-                                    </div>
-                                    <div className="text-muted-foreground mt-1 text-xs">
-                                        Not what you wanted? You can request new variations or go
-                                        back later from your orders.
-                                    </div>
+                                    ))}
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <button
-                                        onClick={handleRequestVariations}
-                                        className="bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium"
-                                    >
-                                        Request Variations
+                                <div className="mt-4 flex gap-2">
+                                    <button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm">
+                                        Select & Continue
                                     </button>
                                     <button
-                                        onClick={handleSelectProduct}
-                                        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium"
+                                        onClick={generateImages}
+                                        className="hover:bg-accent rounded-md border px-4 py-2 text-sm"
                                     >
-                                        Select Product
-                                    </button>
-                                    <button
-                                        onClick={handleContinueLater}
-                                        disabled={isSavingDraft}
-                                        className="bg-card hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium disabled:opacity-50"
-                                    >
-                                        {isSavingDraft ? 'Saving…' : 'Continue later'}
+                                        Generate More
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
-                        <div className="mt-10 grid gap-6 md:grid-cols-3">
-                            <div className="bg-card rounded-xl border p-4">
-                                <h4 className="text-sm font-semibold">Next steps</h4>
-                                <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/design/s/${sessionId}/select-product`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Choose a product to continue
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/products`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Browse catalog
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/cart`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Review cart
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/checkout`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Go to checkout
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="bg-card rounded-xl border p-4">
-                                <h4 className="text-sm font-semibold">Help & support</h4>
-                                <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
-                                    <li>
-                                        <Link
-                                            href={`/${lang}//help`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            How AI designs work
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}//contact`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Contact us
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}//legal/ip-policy`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            IP & content policy
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="bg-card rounded-xl border p-4">
-                                <h4 className="text-sm font-semibold">Your account</h4>
-                                <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
-                                    {!authUserId ? (
-                                        <li>
-                                            <Link
-                                                href={`/${lang}/sign-in`}
-                                                className="hover:text-foreground underline underline-offset-2"
-                                            >
-                                                Sign in to save progress
-                                            </Link>
-                                        </li>
-                                    ) : null}
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/account/orders`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Orders
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/account/addresses`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Addresses
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href={`/${lang}/account/settings`}
-                                            className="hover:text-foreground underline underline-offset-2"
-                                        >
-                                            Settings
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        <div ref={messagesEndRef} />
+                    </div>
+                )}
+            </div>
 
-                        <div className="mt-10">
-                            <Separator />
-                            <div className="text-muted-foreground mt-6 grid grid-cols-2 gap-4 text-xs md:grid-cols-6">
-                                <Link href={`/${lang}//about`} className="hover:text-foreground">
-                                    About
-                                </Link>
-                                <Link
-                                    href={`/${lang}//legal/terms`}
-                                    className="hover:text-foreground"
+            {/* Input Area */}
+            <div className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur">
+                <div className="mx-auto w-full max-w-4xl px-4 py-4">
+                    {/* Quick Prompts */}
+                    <div className="mb-4">
+                        <div className="text-muted-foreground mb-2 text-xs">Quick start:</div>
+                        <div className="flex flex-wrap gap-2">
+                            {DESIGN_PROMPTS.map((prompt, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => sendMessage(prompt)}
+                                    disabled={isStreaming}
+                                    className="bg-secondary hover:bg-secondary/80 rounded-full px-3 py-1.5 text-xs disabled:opacity-50"
                                 >
-                                    Terms
-                                </Link>
-                                <Link
-                                    href={`/${lang}//legal/privacy`}
-                                    className="hover:text-foreground"
-                                >
-                                    Privacy
-                                </Link>
-                                <Link href={`/${lang}/orders`} className="hover:text-foreground">
-                                    All Orders
-                                </Link>
-                                <Link href={`/${lang}/admin`} className="hover:text-foreground">
-                                    Admin
-                                </Link>
-                                <Link
-                                    href={`/${lang}/admin/analytics`}
-                                    className="hover:text-foreground"
-                                >
-                                    Analytics
-                                </Link>
-                            </div>
+                                    {prompt}
+                                </button>
+                            ))}
                         </div>
                     </div>
-                ) : null}
+
+                    <div className="flex gap-3">
+                        <div className="relative flex-1">
+                            <textarea
+                                ref={textareaRef}
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Describe your design ideas, ask for suggestions, or request variations..."
+                                className="focus:ring-primary max-h-32 min-h-[60px] w-full resize-none rounded-lg border px-4 py-3 pr-12 focus:ring-2 focus:outline-none"
+                                disabled={isStreaming}
+                            />
+                            <button
+                                onClick={handleSubmit}
+                                disabled={!inputValue.trim() || isStreaming}
+                                className="text-primary hover:bg-primary/10 absolute right-2 bottom-2 rounded-md p-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isStreaming ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Send className="h-4 w-4" />
+                                )}
+                            </button>
+                        </div>
+                        <button
+                            onClick={generateImages}
+                            disabled={isGeneratingImages || messages.length < 3}
+                            className="bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium disabled:opacity-50"
+                        >
+                            {isGeneratingImages ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <ImageIcon className="h-4 w-4" />
+                            )}
+                            Generate Images
+                        </button>
+                    </div>
+
+                    <div className="text-muted-foreground mt-2 text-center text-xs">
+                        Press Enter to send • Shift+Enter for new line
+                    </div>
+                </div>
             </div>
         </div>
     )

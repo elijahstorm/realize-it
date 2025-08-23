@@ -232,7 +232,7 @@ export default function Page({ params }: PageProps) {
                 markupUSD: Number(pricing.markup.toFixed(2)),
                 shippingUSD: Number(pricing.shipping.toFixed(2)),
             },
-            createdAt: new Date().toISOString(),
+            created_at: new Date().toISOString(),
         }
         try {
             const raw = localStorage.getItem('cart')
@@ -281,7 +281,7 @@ export default function Page({ params }: PageProps) {
                                 Back to Select Product
                             </Link>
                             <Link
-                                href={`/${lang}//help`}
+                                href={`/${lang}/help`}
                                 className="border-input bg-background hover:bg-muted inline-flex items-center rounded-md border px-3 py-2 text-sm"
                             >
                                 Need Help?
@@ -349,7 +349,7 @@ export default function Page({ params }: PageProps) {
                             Cart
                         </Link>
                         <Link
-                            href={`/${lang}//help`}
+                            href={`/${lang}/help`}
                             className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
                         >
                             Help
@@ -456,7 +456,7 @@ export default function Page({ params }: PageProps) {
                         <div className="text-muted-foreground mt-4 text-xs">
                             Shipping to South Korea: {pricing.eta}. See{' '}
                             <Link
-                                href={`/${lang}//help`}
+                                href={`/${lang}/help`}
                                 className="hover:text-foreground underline"
                             >
                                 Help
@@ -655,14 +655,14 @@ export default function Page({ params }: PageProps) {
                                         Taxes are calculated at checkout. Shipping times:{' '}
                                         {pricing.eta}. See{' '}
                                         <Link
-                                            href={`/${lang}//legal/terms`}
+                                            href={`/${lang}/legal/terms`}
                                             className="hover:text-foreground underline"
                                         >
                                             Terms
                                         </Link>{' '}
                                         and{' '}
                                         <Link
-                                            href={`/${lang}//legal/ip-policy`}
+                                            href={`/${lang}/legal/ip-policy`}
                                             className="hover:text-foreground underline"
                                         >
                                             IP Policy
@@ -704,7 +704,7 @@ export default function Page({ params }: PageProps) {
                                 </Link>
                                 <span>•</span>
                                 <Link
-                                    href={`/${lang}//contact`}
+                                    href={`/${lang}/contact`}
                                     className="hover:text-foreground underline"
                                 >
                                     Contact us
@@ -731,19 +731,19 @@ export default function Page({ params }: PageProps) {
 
             <footer className="text-muted-foreground mx-auto max-w-6xl px-4 pt-6 pb-10 text-xs">
                 <div className="flex flex-wrap items-center gap-3">
-                    <Link href={`/${lang}//about`} className="hover:text-foreground">
+                    <Link href={`/${lang}/about`} className="hover:text-foreground">
                         About
                     </Link>
                     <span>·</span>
-                    <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                         Privacy
                     </Link>
                     <span>·</span>
-                    <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                         Terms
                     </Link>
                     <span>·</span>
-                    <Link href={`/${lang}//help`} className="hover:text-foreground">
+                    <Link href={`/${lang}/help`} className="hover:text-foreground">
                         Help
                     </Link>
                 </div>

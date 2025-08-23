@@ -295,38 +295,38 @@ export default function AccountPage() {
                                     </Link>
                                     <Separator className="my-2" />
                                     <Link
-                                        href={`/${lang}//help`}
+                                        href={`/${lang}/help`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Help center
                                     </Link>
                                     <Link
-                                        href={`/${lang}//about`}
+                                        href={`/${lang}/about`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         About
                                     </Link>
                                     <Link
-                                        href={`/${lang}//contact`}
+                                        href={`/${lang}/contact`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Contact
                                     </Link>
                                     <Separator className="my-2" />
                                     <Link
-                                        href={`/${lang}//legal/terms`}
+                                        href={`/${lang}/legal/terms`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Terms
                                     </Link>
                                     <Link
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         Privacy
                                     </Link>
                                     <Link
-                                        href={`/${lang}//legal/ip-policy`}
+                                        href={`/${lang}/legal/ip-policy`}
                                         className="hover:bg-muted rounded px-2 py-1"
                                     >
                                         IP policy
@@ -639,7 +639,7 @@ export default function AccountPage() {
                                         </p>
                                     </Link>
                                     <Link
-                                        href={`/${lang}//help`}
+                                        href={`/${lang}/help`}
                                         className="bg-background hover:bg-muted rounded-md border p-4 shadow-sm transition"
                                     >
                                         <div className="text-sm font-medium">Get help</div>
@@ -648,7 +648,7 @@ export default function AccountPage() {
                                         </p>
                                     </Link>
                                     <Link
-                                        href={`/${lang}//about`}
+                                        href={`/${lang}/about`}
                                         className="bg-background hover:bg-muted rounded-md border p-4 shadow-sm transition"
                                     >
                                         <div className="text-sm font-medium">About RealizeIt</div>

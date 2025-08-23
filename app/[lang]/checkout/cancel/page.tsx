@@ -92,13 +92,10 @@ export default function CancelPage() {
                         <Link href={`${base}/design`} className="hover:text-foreground transition">
                             Start a Design
                         </Link>
-                        <Link href={`${base}//help`} className="hover:text-foreground transition">
+                        <Link href={`${base}/help`} className="hover:text-foreground transition">
                             Help
                         </Link>
-                        <Link
-                            href={`${base}//contact`}
-                            className="hover:text-foreground transition"
-                        >
+                        <Link href={`${base}/contact`} className="hover:text-foreground transition">
                             Contact
                         </Link>
                     </nav>
@@ -218,7 +215,7 @@ export default function CancelPage() {
                                 <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
                                     <li>
                                         <Link
-                                            href={`${base}//help`}
+                                            href={`${base}/help`}
                                             className="hover:text-foreground underline underline-offset-4"
                                         >
                                             Help Center
@@ -226,7 +223,7 @@ export default function CancelPage() {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`${base}//contact`}
+                                            href={`${base}/contact`}
                                             className="hover:text-foreground underline underline-offset-4"
                                         >
                                             Contact support
@@ -234,7 +231,7 @@ export default function CancelPage() {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`${base}//legal/terms`}
+                                            href={`${base}/legal/terms`}
                                             className="hover:text-foreground underline underline-offset-4"
                                         >
                                             Terms of Service
@@ -242,7 +239,7 @@ export default function CancelPage() {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`${base}//legal/privacy`}
+                                            href={`${base}/legal/privacy`}
                                             className="hover:text-foreground underline underline-offset-4"
                                         >
                                             Privacy Policy
@@ -250,7 +247,7 @@ export default function CancelPage() {
                                     </li>
                                     <li>
                                         <Link
-                                            href={`${base}//legal/ip-policy`}
+                                            href={`${base}/legal/ip-policy`}
                                             className="hover:text-foreground underline underline-offset-4"
                                         >
                                             IP & Content Policy
@@ -298,7 +295,7 @@ export default function CancelPage() {
                     <p>
                         Looking for something else? Visit{' '}
                         <Link
-                            href={`${base}//about`}
+                            href={`${base}/about`}
                             className="hover:text-foreground underline underline-offset-4"
                         >
                             About

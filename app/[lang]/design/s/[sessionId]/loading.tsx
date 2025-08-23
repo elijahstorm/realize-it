@@ -458,25 +458,25 @@ export default function LoadingDesignSession() {
 
                                 <div className="grid grid-cols-2 gap-2">
                                     <Link
-                                        href={`/${lang}//help`}
+                                        href={`/${lang}/help`}
                                         className="text-muted-foreground hover:text-foreground text-xs transition"
                                     >
                                         {labels.help}
                                     </Link>
                                     <Link
-                                        href={`/${lang}//about`}
+                                        href={`/${lang}/about`}
                                         className="text-muted-foreground hover:text-foreground text-right text-xs transition"
                                     >
                                         {labels.about}
                                     </Link>
                                     <Link
-                                        href={`/${lang}//legal/terms`}
+                                        href={`/${lang}/legal/terms`}
                                         className="text-muted-foreground hover:text-foreground text-xs transition"
                                     >
                                         {labels.legal}
                                     </Link>
                                     <Link
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                         className="text-muted-foreground hover:text-foreground text-right text-xs transition"
                                     >
                                         {labels.privacy}

@@ -598,7 +598,7 @@ function InsideSidebar({ lang, children }: { lang: Lang; children: ReactNode }) 
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/${lang}//about`}
+                                            href={`/${lang}/about`}
                                             className="flex items-center gap-2"
                                         >
                                             <span className="text-lg">ℹ️</span>
@@ -609,7 +609,7 @@ function InsideSidebar({ lang, children }: { lang: Lang; children: ReactNode }) 
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/${lang}//help`}
+                                            href={`/${lang}/help`}
                                             className="flex items-center gap-2"
                                         >
                                             <span className="text-lg">🧭</span>
@@ -620,7 +620,7 @@ function InsideSidebar({ lang, children }: { lang: Lang; children: ReactNode }) 
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/${lang}//contact`}
+                                            href={`/${lang}/contact`}
                                             className="flex items-center gap-2"
                                         >
                                             <span className="text-lg">✉️</span>

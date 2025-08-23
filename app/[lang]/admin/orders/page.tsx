@@ -728,7 +728,7 @@ export default function AdminOrdersPage() {
                             </li>
                             <li>
                                 <Link
-                                    href={`/${lang}//help`}
+                                    href={`/${lang}/help`}
                                     className="text-primary underline-offset-4 hover:underline"
                                 >
                                     Help Center
@@ -757,23 +757,23 @@ export default function AdminOrdersPage() {
 
             <footer className="text-muted-foreground mx-auto max-w-7xl px-4 py-8 text-xs">
                 <div className="flex flex-wrap items-center gap-3">
-                    <Link href={`/${lang}//about`} className="hover:text-foreground">
+                    <Link href={`/${lang}/about`} className="hover:text-foreground">
                         About
                     </Link>
                     <span>•</span>
-                    <Link href={`/${lang}//contact`} className="hover:text-foreground">
+                    <Link href={`/${lang}/contact`} className="hover:text-foreground">
                         Contact
                     </Link>
                     <span>•</span>
-                    <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                         Terms
                     </Link>
                     <span>•</span>
-                    <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                         Privacy
                     </Link>
                     <span>•</span>
-                    <Link href={`/${lang}//legal/ip-policy`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/ip-policy`} className="hover:text-foreground">
                         IP Policy
                     </Link>
                 </div>

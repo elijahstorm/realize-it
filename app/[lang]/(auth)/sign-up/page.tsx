@@ -188,19 +188,19 @@ export default function SignUpPage() {
                     </Link>
                     <nav className="hidden gap-6 text-sm md:flex">
                         <Link
-                            href={`/${lang}//about`}
+                            href={`/${lang}/about`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             About
                         </Link>
                         <Link
-                            href={`/${lang}//help`}
+                            href={`/${lang}/help`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             Help
                         </Link>
                         <Link
-                            href={`/${lang}//contact`}
+                            href={`/${lang}/contact`}
                             className="text-muted-foreground hover:text-foreground"
                         >
                             Contact
@@ -437,21 +437,21 @@ export default function SignUpPage() {
                                     <span className="text-muted-foreground text-sm">
                                         I agree to the{' '}
                                         <Link
-                                            href={`/${lang}//legal/terms`}
+                                            href={`/${lang}/legal/terms`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             Terms
                                         </Link>
                                         ,{' '}
                                         <Link
-                                            href={`/${lang}//legal/privacy`}
+                                            href={`/${lang}/legal/privacy`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             Privacy Policy
                                         </Link>
                                         , and{' '}
                                         <Link
-                                            href={`/${lang}//legal/ip-policy`}
+                                            href={`/${lang}/legal/ip-policy`}
                                             className="text-foreground hover:text-primary underline underline-offset-2"
                                         >
                                             IP Policy
@@ -585,7 +585,7 @@ export default function SignUpPage() {
                             <Link href={`/${lang}/admin`} className="hover:text-foreground">
                                 Admin
                             </Link>
-                            <Link href={`/${lang}//help`} className="hover:text-foreground">
+                            <Link href={`/${lang}/help`} className="hover:text-foreground">
                                 Support
                             </Link>
                         </div>
@@ -705,14 +705,14 @@ export default function SignUpPage() {
                             <div className="text-muted-foreground text-xs">
                                 Need help? Visit our{' '}
                                 <Link
-                                    href={`/${lang}//help`}
+                                    href={`/${lang}/help`}
                                     className="text-foreground hover:text-primary underline underline-offset-2"
                                 >
                                     Help Center
                                 </Link>{' '}
                                 or{' '}
                                 <Link
-                                    href={`/${lang}//contact`}
+                                    href={`/${lang}/contact`}
                                     className="text-foreground hover:text-primary underline underline-offset-2"
                                 >
                                     Contact us
@@ -727,15 +727,15 @@ export default function SignUpPage() {
             <footer className="border-border/60 bg-background/80 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur">
                 <div className="text-muted-foreground mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs sm:flex-row">
                     <div className="flex items-center gap-3">
-                        <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                        <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                             Terms
                         </Link>
                         <span>•</span>
-                        <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
+                        <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                             Privacy
                         </Link>
                         <span>•</span>
-                        <Link href={`/${lang}//legal/ip-policy`} className="hover:text-foreground">
+                        <Link href={`/${lang}/legal/ip-policy`} className="hover:text-foreground">
                             IP Policy
                         </Link>
                     </div>

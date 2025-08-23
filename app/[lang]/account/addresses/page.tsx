@@ -62,7 +62,7 @@ function SectionNav({ lang }: { lang: string }) {
                 Start a Design
             </Link>
             <span className="text-muted-foreground/60">•</span>
-            <Link href={`${linkBase}//help`} className={linkClass}>
+            <Link href={`${linkBase}/help`} className={linkClass}>
                 Help
             </Link>
         </div>
@@ -685,7 +685,7 @@ export default function AddressesPage() {
                             <div className="text-muted-foreground mt-3 text-xs">
                                 Need help with delivery? Visit our{' '}
                                 <Link
-                                    href={`/${lang}//help`}
+                                    href={`/${lang}/help`}
                                     className="text-primary hover:underline"
                                 >
                                     Help Center
@@ -725,7 +725,7 @@ export default function AddressesPage() {
                                 </li>
                                 <li>
                                     <Link
-                                        href={`/${lang}//about`}
+                                        href={`/${lang}/about`}
                                         className="text-primary hover:underline"
                                     >
                                         About RealizeIt
@@ -733,7 +733,7 @@ export default function AddressesPage() {
                                 </li>
                                 <li>
                                     <Link
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                         className="text-primary hover:underline"
                                     >
                                         Privacy Policy

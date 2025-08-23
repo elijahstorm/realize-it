@@ -41,8 +41,8 @@ export default function Loading() {
     }, [steps.length])
 
     const cartHref = `/${lang}/cart`
-    const helpHref = `/${lang}//help`
-    const contactHref = `/${lang}//contact`
+    const helpHref = `/${lang}/help`
+    const contactHref = `/${lang}/contact`
     const ordersHref = `/${lang}/account/orders`
     const productsHref = `/${lang}/products`
     const designHref = `/${lang}/design`
@@ -182,19 +182,19 @@ export default function Loading() {
                             </span>
                             <div className="flex items-center gap-3">
                                 <Link
-                                    href={`/${lang}//legal/terms`}
+                                    href={`/${lang}/legal/terms`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     Terms
                                 </Link>
                                 <Link
-                                    href={`/${lang}//legal/privacy`}
+                                    href={`/${lang}/legal/privacy`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     Privacy
                                 </Link>
                                 <Link
-                                    href={`/${lang}//legal/ip-policy`}
+                                    href={`/${lang}/legal/ip-policy`}
                                     className="hover:text-foreground underline underline-offset-4"
                                 >
                                     IP Policy

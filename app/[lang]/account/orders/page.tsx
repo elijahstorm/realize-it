@@ -243,7 +243,7 @@ export default function OrdersPage() {
                 Settings
             </Link>
             <span className="text-border">|</span>
-            <Link href={`/${lang}//help`} className="hover:text-foreground">
+            <Link href={`/${lang}/help`} className="hover:text-foreground">
                 Help
             </Link>
             <span className="text-border">|</span>
@@ -393,7 +393,7 @@ export default function OrdersPage() {
                                             >
                                                 Explore products
                                             </Link>
-                                            <Link href={`/${lang}//help`} className="underline">
+                                            <Link href={`/${lang}/help`} className="underline">
                                                 Need help?
                                             </Link>
                                         </div>
@@ -548,19 +548,19 @@ export default function OrdersPage() {
                         Cart
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}//about`} className="hover:text-foreground">
+                    <Link href={`/${lang}/about`} className="hover:text-foreground">
                         About
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}//contact`} className="hover:text-foreground">
+                    <Link href={`/${lang}/contact`} className="hover:text-foreground">
                         Contact
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}//legal/terms`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/terms`} className="hover:text-foreground">
                         Terms
                     </Link>
                     <span className="text-border">|</span>
-                    <Link href={`/${lang}//legal/privacy`} className="hover:text-foreground">
+                    <Link href={`/${lang}/legal/privacy`} className="hover:text-foreground">
                         Privacy
                     </Link>
                 </div>

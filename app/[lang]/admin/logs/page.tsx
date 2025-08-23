@@ -496,10 +496,10 @@ export default function AdminLogsPage() {
                         You don&apos;t have permission to view logs. If you believe this is an
                         error, contact support on the Help page.
                         <div className="mt-2 flex gap-3">
-                            <Link href={`/${lang}//help`} className="underline">
+                            <Link href={`/${lang}/help`} className="underline">
                                 Help
                             </Link>
-                            <Link href={`/${lang}//contact`} className="underline">
+                            <Link href={`/${lang}/contact`} className="underline">
                                 Contact
                             </Link>
                         </div>

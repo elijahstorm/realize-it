@@ -14,7 +14,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import { cn } from '@/utils/utils'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type Lang = 'en' | 'kr' | string
@@ -61,8 +61,8 @@ const t = (lang: Lang) =>
                 queued: 'Queued',
                 selectThis: 'Use this design',
                 limitReached: 'Limit reached',
-                regenLeft: (used: number, max: number) => `${max - used} regenerations left`,
-                upscaleLeft: (used: number, max: number) => `${max - used} upscales left`,
+                regenLeft: `regenerations left`,
+                upscaleLeft: `upscales left`,
                 noneYet: 'No variations yet.',
                 createFirst: 'Create your first set of variations to get started.',
                 generating: 'Generation requested',
@@ -100,8 +100,8 @@ const t = (lang: Lang) =>
                 queued: '큐 대기',
                 selectThis: '이 디자인 사용',
                 limitReached: '한도 도달',
-                regenLeft: (used: number, max: number) => `${max - used}회 추가 생성 가능`,
-                upscaleLeft: (used: number, max: number) => `${max - used}회 업스케일 가능`,
+                regenLeft: `회 추가 생성 가능`,
+                upscaleLeft: `회 업스케일 가능`,
                 noneYet: '아직 변형이 없습니다.',
                 createFirst: '처음 변형 세트를 생성해 시작하세요.',
                 generating: '생성이 요청되었습니다',
@@ -148,7 +148,6 @@ export default function VariationsPage() {
     const lang = params?.lang || 'en'
     const sessionId = params?.sessionId || ''
     const { toast } = useToast()
-    const router = useRouter()
     const supabase = useMemo(() => supabaseBrowser, [])
 
     const [loading, setLoading] = useState(true)
@@ -456,7 +455,7 @@ export default function VariationsPage() {
                 {tt.myOrders}
             </Link>
             <span className="text-border">/</span>
-            <Link href={`/${lang}//help`} className="hover:text-foreground transition-colors">
+            <Link href={`/${lang}/help`} className="hover:text-foreground transition-colors">
                 {tt.help}
             </Link>
             <span className="text-border">/</span>
@@ -679,7 +678,7 @@ export default function VariationsPage() {
                                         <div className="mb-2 flex items-center justify-between text-sm">
                                             <span className="font-medium">{tt.generateMore}</span>
                                             <span className="text-muted-foreground">
-                                                {tt.regenLeft(regenUsed, limits.maxRegenerations)}
+                                                {limits.maxUpscales - upscaleUsed} {tt.regenLeft}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -722,7 +721,7 @@ export default function VariationsPage() {
                                         <div className="mb-2 flex items-center justify-between text-sm">
                                             <span className="font-medium">{tt.upscaling}</span>
                                             <span className="text-muted-foreground">
-                                                {tt.upscaleLeft(upscaleUsed, limits.maxUpscales)}
+                                                {limits.maxUpscales - upscaleUsed} {tt.upscaleLeft}
                                             </span>
                                         </div>
                                         <p className="text-muted-foreground text-xs">
@@ -776,7 +775,7 @@ export default function VariationsPage() {
                                         Orders
                                     </Link>
                                     <Link
-                                        href={`/${lang}//about`}
+                                        href={`/${lang}/about`}
                                         className="hover:bg-accent rounded-md border px-3 py-2"
                                     >
                                         About
@@ -791,25 +790,25 @@ export default function VariationsPage() {
                                 <div className="text-muted-foreground mt-3 flex flex-wrap gap-3 text-xs">
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}//legal/terms`}
+                                        href={`/${lang}/legal/terms`}
                                     >
                                         {tt.legal.terms}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}//legal/privacy`}
+                                        href={`/${lang}/legal/privacy`}
                                     >
                                         {tt.legal.privacy}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}//legal/ip-policy`}
+                                        href={`/${lang}/legal/ip-policy`}
                                     >
                                         {tt.legal.ip}
                                     </Link>
                                     <Link
                                         className="hover:text-foreground"
-                                        href={`/${lang}//contact`}
+                                        href={`/${lang}/contact`}
                                     >
                                         {tt.legal.contact}
                                     </Link>

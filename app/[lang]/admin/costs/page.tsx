@@ -738,23 +738,23 @@ export default function AdminCostsPage() {
                 <footer className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div>
                         Need help? Visit{' '}
-                        <Link href={`/${lang}//help`} className="text-primary hover:underline">
+                        <Link href={`/${lang}/help`} className="text-primary hover:underline">
                             Help
                         </Link>{' '}
                         or{' '}
-                        <Link href={`/${lang}//contact`} className="text-primary hover:underline">
+                        <Link href={`/${lang}/contact`} className="text-primary hover:underline">
                             Contact
                         </Link>
                         .
                     </div>
                     <div className="flex items-center gap-3">
-                        <Link href={`/${lang}//legal/terms`} className="hover:underline">
+                        <Link href={`/${lang}/legal/terms`} className="hover:underline">
                             Terms
                         </Link>
-                        <Link href={`/${lang}//legal/privacy`} className="hover:underline">
+                        <Link href={`/${lang}/legal/privacy`} className="hover:underline">
                             Privacy
                         </Link>
-                        <Link href={`/${lang}//legal/ip-policy`} className="hover:underline">
+                        <Link href={`/${lang}/legal/ip-policy`} className="hover:underline">
                             IP Policy
                         </Link>
                     </div>

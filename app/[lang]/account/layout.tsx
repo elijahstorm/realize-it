@@ -237,7 +237,7 @@ function InsideSidebar({ children }: { children: React.ReactNode }) {
             { label: 'Products', href: `/${lang}/products`, icon: IconHome },
             { label: 'Design', href: `/${lang}/design`, icon: IconSettings },
             { label: 'Cart', href: `/${lang}/cart`, icon: IconCart },
-            { label: 'Help', href: `/${lang}//help`, icon: IconHelp },
+            { label: 'Help', href: `/${lang}/help`, icon: IconHelp },
             { label: 'All Orders', href: `/${lang}/orders`, icon: IconOrders },
         ],
         [lang]
@@ -351,21 +351,21 @@ function InsideSidebar({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="mt-2 flex items-center gap-2">
                             <Link
-                                href={`/${lang}//legal/terms`}
+                                href={`/${lang}/legal/terms`}
                                 className="text-muted-foreground hover:text-foreground text-xs"
                             >
                                 Terms
                             </Link>
                             <span className="text-muted-foreground">•</span>
                             <Link
-                                href={`/${lang}//legal/privacy`}
+                                href={`/${lang}/legal/privacy`}
                                 className="text-muted-foreground hover:text-foreground text-xs"
                             >
                                 Privacy
                             </Link>
                             <span className="text-muted-foreground">•</span>
                             <Link
-                                href={`/${lang}//legal/ip-policy`}
+                                href={`/${lang}/legal/ip-policy`}
                                 className="text-muted-foreground hover:text-foreground text-xs"
                             >
                                 IP Policy
