@@ -13,7 +13,14 @@ export async function middleware(request: NextRequest) {
         (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     )
 
-    if (pathnameHasLocale) return NextResponse.next()
+    if (pathnameHasLocale) {
+        const headers = new Headers(request.headers)
+        headers.set('x-current-lang', pathname.split('/')[1])
+        headers.set('x-current-pathname', pathname)
+        return NextResponse.next({
+            request: { headers: headers },
+        })
+    }
 
     const locale = match(languages, locales, defaultLocale)
     request.nextUrl.pathname = `/${locale}${pathname}`
