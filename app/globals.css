@@ -1,26 +1,143 @@
 @import 'tailwindcss';
 
-:root {
-    --background: #ffffff;
-    --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+    :root {
+        --background: hsl(210 40% 98%); /* clean canvas */
+        --foreground: hsl(222 47% 11%); /* deep neutral text */
+
+        --card: hsl(0 0% 100%);
+        --card-foreground: hsl(222 47% 11%);
+
+        --popover: hsl(0 0% 100%);
+        --popover-foreground: hsl(222 47% 11%);
+
+        --primary: hsl(200 95% 40%); /* solar blue – trust + tech */
+        --primary-foreground: hsl(0 0% 100%);
+
+        --secondary: hsl(45 92% 55%); /* solar yellow – creativity, energy */
+        --secondary-foreground: hsl(222 47% 11%);
+
+        --accent: hsl(280 70% 60%); /* purple – imagination & design */
+        --accent-foreground: hsl(0 0% 100%);
+
+        --muted: hsl(210 20% 95%);
+        --muted-foreground: hsl(220 8% 46%);
+
+        --destructive: hsl(0 72% 50%);
+        --destructive-foreground: hsl(0 0% 100%);
+
+        --border: hsl(215 15% 85%);
+        --input: hsl(214 31% 90%);
+        --ring: hsl(200 95% 40%);
+
+        --radius: 16px;
+
+        /* charts (product, creativity, workflow) */
+        --chart-1: hsl(200 95% 40%); /* blue – AI/tech */
+        --chart-2: hsl(280 70% 60%); /* purple – creativity */
+        --chart-3: hsl(45 92% 55%); /* yellow – energy */
+        --chart-4: hsl(340 72% 55%); /* pink – human touch */
+        --chart-5: hsl(160 65% 40%); /* green – growth */
+    }
+
+    .dark {
+        --background: hsl(222 47% 11%);
+        --foreground: hsl(210 40% 96%);
+
+        --card: hsl(222 50% 13%);
+        --card-foreground: hsl(210 40% 96%);
+
+        --popover: hsl(222 50% 13%);
+        --popover-foreground: hsl(210 40% 96%);
+
+        --primary: hsl(200 95% 55%);
+        --primary-foreground: hsl(222 47% 11%);
+
+        --secondary: hsl(45 92% 60%);
+        --secondary-foreground: hsl(222 47% 11%);
+
+        --accent: hsl(280 70% 65%);
+        --accent-foreground: hsl(222 47% 11%);
+
+        --muted: hsl(217 20% 20%);
+        --muted-foreground: hsl(220 10% 60%);
+
+        --destructive: hsl(0 65% 40%);
+        --destructive-foreground: hsl(210 40% 96%);
+
+        --border: hsl(217 20% 30%);
+        --input: hsl(217 20% 20%);
+        --ring: hsl(200 95% 55%);
+
+        --chart-1: hsl(200 95% 55%);
+        --chart-2: hsl(280 70% 65%);
+        --chart-3: hsl(45 92% 60%);
+        --chart-4: hsl(340 72% 60%);
+        --chart-5: hsl(160 65% 45%);
+    }
+
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@utility container {
+    margin-inline: auto;
+    padding-inline: 2rem;
 }
 
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-}
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --radius-xs: calc(var(--radius) - 8px);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --animate-accordion-down: accordion-down 0.2s ease-out;
+    --animate-accordion-up: accordion-up 0.2s ease-out;
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
+    --container-2xs: 16rem;
+    --container-4xs: 8rem;
+    --container-16xs: 4rem;
+
+    @keyframes accordion-down {
+        from {
+            height: 0;
+        }
+        to {
+            height: var(--radix-accordion-content-height);
+        }
     }
-}
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+    @keyframes accordion-up {
+        from {
+            height: var(--radix-accordion-content-height);
+        }
+        to {
+            height: 0;
+        }
+    }
 }
