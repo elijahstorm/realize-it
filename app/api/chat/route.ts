@@ -1,10 +1,29 @@
+import cloudinary, { UploadApiResponse } from 'cloudinary'
 import OpenAI from 'openai'
 
-const apiKey = process.env.SOLARAI_API_KEY
-const openai = new OpenAI({
-    apiKey,
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+const solarai = new OpenAI({
+    apiKey: process.env.SOLARAI_API_KEY,
     baseURL: 'https://api.upstage.ai/v1',
 })
+const openai = new OpenAI()
+const IMAGE_MODEL = 'gpt-image-1'
+
+const designerAgentSystemPrompt = `You are an AI design assistant. This tool is called RealizeIt and it generates AI images and then makes real life products using those images. You will output JSON with the \`image_gen_prompt\` value being your summarized prompt to generate the AI image. you are located in the new design creation page. you are helping the user figure out what their initial deisgn idea is so we can generate it. you will also recieve feedback from the user and will make updates to your design prompt. Your aim is to find the user's perfect design. the design in their mind. the user might not always know what they want, so it's your job to find that out using follow up questions and leading idea suggestions. Always return structured json. Never reply with text or address the user's response directly. Behind the scenes, we use OpenAI's \`${IMAGE_MODEL}\` model for image gen. if you include the \`image_gen_prompt\` value, do not ask the user for any follow-ups like "any information before I generate the image?" because it will sound unnatural. You are automatically trigger an image render when the value is present. Instead you should mention to the user to wait for the image to finish loading, and then ask them if they wnat any changes.
+
+Always respond with valid JSON in this exact format:
+{
+    "content": "your main response here. talk to the user here. ask follow ups to help get a clear picture of what the user wants.",
+    "reasoning": "your thought process and reasoning here",
+    "image_gen_prompt": "optional - only when ready to generate an image. we should be sure of the user's requested image before acting. image generation is expensive and we want to make sure we are ready to commit to a design before sending this. if the user is talking without a specific request, do not generate an iamge. providing this value will automatically trigger an image generation job."
+}
+
+Do not include any text outside of this JSON structure or the tool will break.`
 
 export async function POST(req: Request) {
     const {
@@ -15,18 +34,12 @@ export async function POST(req: Request) {
         messages: []
     } = await req.json()
 
-    const chatCompletion = await openai.chat.completions.create({
+    const chatCompletion = await solarai.chat.completions.create({
         model: 'solar-pro2',
         messages: [
             {
                 role: 'system',
-                content: `You are an AI design assistant. This tool is called RealizeIt and it generates AI images and then makes real life products using those images. You will output JSON with the \`image_gen_prompt\` value being your summarized prompt to generate the AI image. you are located in the new design creation page. you are helping the user figure out what their initial deisgn idea is so we can generate it. you will also recieve feedback from the user and will make updates to your design prompt. Your aim is to find the user's perfect design. the design in their mind. the user might not always know what they want, so it's your job to find that out using follow up questions and leading idea suggestions. Always return structured json. Never reply with text or address the user's response directly.
-{
-    "content": "your main response here. talk to the user here. ask follow ups to help get a clear picture of what the user wants.",
-    "reasoning": "your thought process and reasoning here",
-    "image_gen_prompt": "optional - only when ready to generate an image. we should be sure of the user's requested image before acting. image generation is expensive and we want to make sure we are ready to commit to a design before sending this. if the user is talking without a specific request, do not generate an iamge. providing this value will automatically trigger an image generation job."
-}
-`,
+                content: designerAgentSystemPrompt,
             },
             {
                 role: 'user',
@@ -41,54 +54,157 @@ export async function POST(req: Request) {
         async start(controller) {
             try {
                 let accumulatedContent = ''
+                let lastSentContentLength = 0
+                let imageGenerationTriggered = false
 
                 for await (const chunk of chatCompletion) {
                     const content = chunk.choices[0]?.delta?.content || ''
                     accumulatedContent += content
 
-                    // Try to parse complete JSON objects
-                    try {
-                        const parsed = JSON.parse(accumulatedContent)
-                        // If parsing succeeds, we have a complete JSON object
-                        const responseChunk = JSON.stringify(parsed)
-                        controller.enqueue(new TextEncoder().encode(`data: ${responseChunk}\n`))
-                        accumulatedContent = '' // Reset for next potential object
-                    } catch (parseError) {
-                        // JSON is incomplete, continue accumulating
-                        // Send incremental content updates if we can extract partial content
-                        const contentMatch = accumulatedContent.match(/"content":\s*"([^"]*)"/)
-                        if (contentMatch && contentMatch[1]) {
-                            const partialChunk = JSON.stringify({
-                                content: contentMatch[1],
-                                partial: true,
+                    // Try to extract and stream content progressively
+                    const contentMatch = accumulatedContent.match(
+                        /"content":\s*"([^"\\]*(\\.[^"\\]*)*)"/
+                    )
+                    if (contentMatch && contentMatch[1]) {
+                        const extractedContent = contentMatch[1]
+
+                        // Only send new content that we haven't sent before
+                        if (extractedContent.length > lastSentContentLength) {
+                            const newContent = extractedContent.slice(lastSentContentLength)
+                            const contentChunk = JSON.stringify({
+                                content: newContent,
+                                streaming: true,
                             })
-                            controller.enqueue(new TextEncoder().encode(`data: ${partialChunk}\n`))
+                            controller.enqueue(
+                                new TextEncoder().encode(`data: ${contentChunk}\n\n`)
+                            )
+                            lastSentContentLength = extractedContent.length
                         }
                     }
-                }
 
-                // Final attempt to parse any remaining content
-                if (accumulatedContent.trim()) {
+                    // Check if we can parse complete JSON
                     try {
                         const parsed = JSON.parse(accumulatedContent)
-                        const responseChunk = JSON.stringify(parsed)
-                        controller.enqueue(new TextEncoder().encode(`data: ${responseChunk}\n`))
-                    } catch (parseError) {
-                        // If we can't parse, send the raw content
-                        const fallbackChunk = JSON.stringify({
-                            content: accumulatedContent,
-                            reasoning: 'Failed to parse structured response',
+
+                        // Send complete response
+                        const responseChunk = JSON.stringify({
+                            content: parsed.content,
+                            reasoning: parsed.reasoning,
+                            complete: true,
                         })
-                        controller.enqueue(new TextEncoder().encode(`data: ${fallbackChunk}\n`))
+                        controller.enqueue(new TextEncoder().encode(`data: ${responseChunk}\n\n`))
+
+                        // Handle image generation if prompt is provided
+                        if (parsed.image_gen_prompt && !imageGenerationTriggered) {
+                            imageGenerationTriggered = true
+
+                            // Send image generation start status
+                            const startChunk = JSON.stringify({
+                                image_status: 'gen',
+                                image_prompt: parsed.image_gen_prompt,
+                            })
+                            controller.enqueue(new TextEncoder().encode(`data: ${startChunk}\n\n`))
+
+                            try {
+                                // Generate image
+                                const result = await openai.images.generate({
+                                    model: IMAGE_MODEL,
+                                    prompt: parsed.image_gen_prompt,
+                                    size: '1024x1024',
+                                })
+
+                                if (!result.data[0].b64_json) {
+                                    throw new Error('OpenAI did not return b64_json for the image')
+                                }
+
+                                const image_base64 = result.data[0].b64_json
+                                const image_bytes = Buffer.from(image_base64, 'base64')
+
+                                const uploadRes = await new Promise<UploadApiResponse>(
+                                    (resolve, reject) => {
+                                        const stream = cloudinary.v2.uploader.upload_stream(
+                                            { folder: process.env.CLOUDINARY_FOLDER },
+                                            (error, result) => {
+                                                if (error) reject(error)
+                                                else resolve(result as UploadApiResponse)
+                                            }
+                                        )
+                                        stream.end(image_bytes)
+                                    }
+                                )
+
+                                const doneChunk = JSON.stringify({
+                                    image_status: 'done',
+                                    image_data: image_base64,
+                                    image_prompt: parsed.image_gen_prompt,
+                                    image_url: uploadRes.secure_url,
+                                })
+
+                                controller.enqueue(
+                                    new TextEncoder().encode(`data: ${doneChunk}\n\n`)
+                                )
+                            } catch (imageError: any) {
+                                // Send image error status
+                                const errorChunk = JSON.stringify({
+                                    image_status: 'error',
+                                    image_error: imageError.message,
+                                })
+                                controller.enqueue(
+                                    new TextEncoder().encode(`data: ${errorChunk}\n\n`)
+                                )
+                            }
+                        }
+
+                        break // Exit loop since we have complete JSON
+                    } catch (parseError) {
+                        // JSON is incomplete, continue accumulating
+                        // Progressive content streaming is handled above
                     }
                 }
 
+                // Handle case where streaming ended but JSON is incomplete
+                if (
+                    accumulatedContent.trim() &&
+                    !accumulatedContent.includes('"image_gen_prompt"')
+                ) {
+                    // Try to extract whatever content we can
+                    const contentMatch = accumulatedContent.match(
+                        /"content":\s*"([^"\\]*(\\.[^"\\]*)*)"?/
+                    )
+                    const reasoningMatch = accumulatedContent.match(
+                        /"reasoning":\s*"([^"\\]*(\\.[^"\\]*)*)"?/
+                    )
+
+                    if (contentMatch || reasoningMatch) {
+                        const fallbackChunk = JSON.stringify({
+                            content: contentMatch ? contentMatch[1] : '',
+                            reasoning: reasoningMatch ? reasoningMatch[1] : 'Incomplete response',
+                            complete: true,
+                            recovered: true,
+                        })
+                        controller.enqueue(new TextEncoder().encode(`data: ${fallbackChunk}\n\n`))
+                    } else {
+                        // Last resort: send raw content
+                        const rawChunk = JSON.stringify({
+                            content: accumulatedContent,
+                            reasoning: 'Failed to parse structured response',
+                            complete: true,
+                            raw: true,
+                        })
+                        controller.enqueue(new TextEncoder().encode(`data: ${rawChunk}\n\n`))
+                    }
+                }
+
+                // Send completion signal
                 controller.enqueue(
-                    new TextEncoder().encode(`data: ${JSON.stringify({ done: true })}\n`)
+                    new TextEncoder().encode(`data: ${JSON.stringify({ done: true })}\n\n`)
                 )
             } catch (err: any) {
-                const errorChunk = JSON.stringify({ error: err.message })
-                controller.enqueue(new TextEncoder().encode(`data: ${errorChunk}\n`))
+                const errorChunk = JSON.stringify({
+                    error: err.message,
+                    complete: true,
+                })
+                controller.enqueue(new TextEncoder().encode(`data: ${errorChunk}\n\n`))
             } finally {
                 controller.close()
             }
