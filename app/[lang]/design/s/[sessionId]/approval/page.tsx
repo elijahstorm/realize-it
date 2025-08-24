@@ -207,70 +207,7 @@ export default function ApprovalPage() {
                                 : 'Review your design and product configuration before checkout.'}
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 text-sm">
-                        <Link
-                            href={`/${lang}/products`}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            {locale === 'ko-KR' ? '제품' : 'Products'}
-                        </Link>
-                        <span className="text-muted-foreground">/</span>
-                        <Link
-                            href={`/${lang}/help`.replace('/', '')}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            {locale === 'ko-KR' ? '도움말' : 'Help'}
-                        </Link>
-                        <span className="text-muted-foreground">/</span>
-                        <Link
-                            href={`/${lang}/cart`}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            {locale === 'ko-KR' ? '장바구니' : 'Cart'}
-                        </Link>
-                        <span className="text-muted-foreground">/</span>
-                        <Link
-                            href={`/${lang}/account`}
-                            className="text-muted-foreground hover:text-foreground"
-                        >
-                            {locale === 'ko-KR' ? '계정' : 'Account'}
-                        </Link>
-                    </div>
                 </div>
-
-                <nav aria-label="Progress" className="mb-6">
-                    <ol className="grid grid-cols-4 gap-2 text-xs">
-                        <li>
-                            <Link
-                                href={`/${lang}/design/s/${encodeURIComponent(sessionId)}/variations`}
-                                className="border-border bg-card text-muted-foreground hover:text-foreground block rounded-md border px-3 py-2 text-center"
-                            >
-                                {locale === 'ko-KR' ? '디자인 선택' : 'Variations'}
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href={`/${lang}/design/s/${encodeURIComponent(sessionId)}/select-product`}
-                                className="border-border bg-card text-muted-foreground hover:text-foreground block rounded-md border px-3 py-2 text-center"
-                            >
-                                {locale === 'ko-KR' ? '상품 선택' : 'Select Product'}
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href={editHref}
-                                className="border-border bg-card text-muted-foreground hover:text-foreground block rounded-md border px-3 py-2 text-center"
-                            >
-                                {locale === 'ko-KR' ? '구성' : 'Configure'}
-                            </Link>
-                        </li>
-                        <li>
-                            <span className="border-primary bg-primary text-primary-foreground block rounded-md border px-3 py-2 text-center">
-                                {locale === 'ko-KR' ? '승인' : 'Approval'}
-                            </span>
-                        </li>
-                    </ol>
-                </nav>
 
                 {error ? (
                     <Alert variant="destructive" className="mb-6">

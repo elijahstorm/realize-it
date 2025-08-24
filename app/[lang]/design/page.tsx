@@ -132,30 +132,6 @@ export default function DesignEntryPage() {
     return (
         <div className="from-background via-muted/30 to-muted/60 min-h-[calc(100dvh-0px)] bg-gradient-to-b">
             <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:py-12">
-                <div className="mb-6 flex items-center justify-between">
-                    <nav className="text-muted-foreground text-sm">
-                        <Link href={`/${lang}`} className="hover:text-foreground">
-                            Home
-                        </Link>
-                        <span className="mx-2">/</span>
-                        <span className="text-foreground">Design</span>
-                    </nav>
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href={`/${lang}/products`}
-                            className="border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground rounded-md border px-3 py-1.5 text-sm shadow-sm"
-                        >
-                            Browse Products
-                        </Link>
-                        <Link
-                            href={`/${lang}/sign-in`}
-                            className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-md px-3 py-1.5 text-sm shadow-sm"
-                        >
-                            Sign in
-                        </Link>
-                    </div>
-                </div>
-
                 <div className="border-border bg-card relative overflow-hidden rounded-2xl border p-6 shadow-sm sm:p-10">
                     <div className="bg-primary/10 absolute -top-24 -right-20 h-64 w-64 rounded-full blur-3xl" />
                     <div className="bg-accent/10 absolute -bottom-32 -left-24 h-72 w-72 rounded-full blur-3xl" />
@@ -377,7 +353,7 @@ export default function DesignEntryPage() {
                                         ].map((item, idx) => (
                                             <CarouselItem
                                                 key={idx}
-                                                className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+                                                className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/3"
                                             >
                                                 <Link
                                                     href={item.href}
@@ -399,81 +375,6 @@ export default function DesignEntryPage() {
                                         <CarouselNext className="border-border bg-background/70 hover:bg-muted rounded-md border" />
                                     </div>
                                 </Carousel>
-
-                                <Separator className="my-6" />
-
-                                <div className="grid gap-4 sm:grid-cols-3">
-                                    <div className="border-border bg-muted/30 rounded-lg border p-4">
-                                        <div className="text-sm font-semibold">1. Describe</div>
-                                        <p className="text-muted-foreground mt-1 text-xs">
-                                            Start here with your idea and style hints.
-                                        </p>
-                                    </div>
-                                    <Link
-                                        href={`/${lang}/design/s/${safeUuid()}/select-product`}
-                                        className="border-border bg-muted/30 hover:bg-accent hover:text-accent-foreground rounded-lg border p-4"
-                                    >
-                                        <div className="text-sm font-semibold">2. Select</div>
-                                        <p className="mt-1 text-xs">
-                                            Pick product, size and color.
-                                        </p>
-                                    </Link>
-                                    <Link
-                                        href={`/${lang}/checkout`}
-                                        className="border-border bg-muted/30 hover:bg-accent hover:text-accent-foreground rounded-lg border p-4"
-                                    >
-                                        <div className="text-sm font-semibold">3. Checkout</div>
-                                        <p className="mt-1 text-xs">Pay securely with Stripe.</p>
-                                    </Link>
-                                </div>
-
-                                <div className="mt-6 grid gap-2 text-sm">
-                                    <div className="text-muted-foreground">Useful links</div>
-                                    <div className="flex flex-wrap gap-3">
-                                        <Link
-                                            href={`/${lang}/about`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            About
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/help`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Help
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/contact`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Contact
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/orders`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Your orders
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/cart`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Cart
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/account`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Account
-                                        </Link>
-                                        <Link
-                                            href={`/${lang}/admin`}
-                                            className="underline-offset-4 hover:underline"
-                                        >
-                                            Admin
-                                        </Link>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

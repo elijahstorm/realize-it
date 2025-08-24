@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 
 type PageProps = {
-    params: { lang: string; sessionId: string; productSlug: string }
+    params: { lang: string; sessionId: string; productSlug: string; imgId: string }
 }
 
 type ProductConfig = {
@@ -98,6 +98,87 @@ const PRODUCT_CATALOG: Record<string, ProductConfig> = {
         sizes: ['One Size'],
         variants: [{ id: 'onesize', name: 'One Size', baseCost: 8 }],
     },
+    sweatshirt: {
+        slug: 'sweatshirt',
+        name: 'Crewneck Sweatshirt',
+        colors: [
+            { name: 'Black', hex: '#111827' },
+            { name: 'Heather Gray', hex: '#9CA3AF' },
+            { name: 'Navy', hex: '#1F2937' },
+            { name: 'Maroon', hex: '#800000' },
+        ],
+        sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
+        variants: [
+            { id: 'classic', name: 'Classic', baseCost: 20 },
+            { id: 'premium', name: 'Premium', baseCost: 30 },
+        ],
+    },
+    'phone-case': {
+        slug: 'phone-case',
+        name: 'Phone Case',
+        colors: [
+            { name: 'Clear', hex: '#FFFFFF00' },
+            { name: 'Black', hex: '#111827' },
+            { name: 'White', hex: '#F9FAFB' },
+        ],
+        sizes: ['iPhone', 'Android'],
+        variants: [
+            { id: 'standard', name: 'Standard', baseCost: 15 },
+            { id: 'premium', name: 'Premium', baseCost: 20 },
+        ],
+    },
+    canvas: {
+        slug: 'canvas',
+        name: 'Gallery Canvas',
+        colors: [
+            { name: 'White', hex: '#FFFFFF' },
+            { name: 'Black', hex: '#111827' },
+        ],
+        sizes: ['12x12', '16x20', '18x24'],
+        variants: [
+            { id: 'standard', name: 'Standard', baseCost: 40 },
+            { id: 'premium', name: 'Premium', baseCost: 60 },
+        ],
+    },
+    blanket: {
+        slug: 'blanket',
+        name: 'Fleece Blanket',
+        colors: [
+            { name: 'Gray', hex: '#9CA3AF' },
+            { name: 'Black', hex: '#111827' },
+            { name: 'Navy', hex: '#1F2937' },
+        ],
+        sizes: ['50x60', '60x80'],
+        variants: [
+            { id: 'standard', name: 'Standard', baseCost: 25 },
+            { id: 'premium', name: 'Premium', baseCost: 40 },
+        ],
+    },
+    stickers: {
+        slug: 'stickers',
+        name: 'Die-Cut Stickers',
+        colors: [{ name: 'Full Color', hex: '#FFFFFF' }],
+        sizes: ['2in', '3in', '4in'],
+        variants: [
+            { id: 'single', name: 'Single', baseCost: 2 },
+            { id: 'pack', name: 'Pack of 5', baseCost: 8 },
+        ],
+    },
+    journal: {
+        slug: 'journal',
+        name: 'Hardcover Journal',
+        colors: [
+            { name: 'Black', hex: '#111827' },
+            { name: 'Navy', hex: '#1F2937' },
+            { name: 'Tan', hex: '#D9B99B' },
+        ],
+        sizes: ['A5', 'A4'],
+        variants: [
+            { id: 'lined', name: 'Lined', baseCost: 15 },
+            { id: 'blank', name: 'Blank', baseCost: 15 },
+            { id: 'grid', name: 'Grid', baseCost: 15 },
+        ],
+    },
 }
 
 function estimateShippingUSD(slug: string, quantity: number) {
@@ -134,10 +215,15 @@ function uuid() {
 }
 
 export default function Page({ params }: PageProps) {
-    const { lang, sessionId, productSlug } = params
+    const { lang, sessionId, productSlug, imgId } = params
     const router = useRouter()
     const product = PRODUCT_CATALOG[productSlug]
+    const supabase = supabaseBrowser
 
+    const [selectedImage, setSelectedImage] = useState<{
+        image_url: string
+        image_prompt: string
+    } | null>(null)
     const [userEmail, setUserEmail] = useState<string | null>(null)
     const [color, setColor] = useState<string>(product?.colors?.[0]?.name || '')
     const [size, setSize] = useState<string>(product?.sizes?.[0] || '')
@@ -171,17 +257,32 @@ export default function Page({ params }: PageProps) {
     useEffect(() => {
         // ensure defaults if product changes
         if (product) {
-            if (!product.colors.find((c) => c.name === color)) {
-                setColor(product.colors[0]?.name || '')
+            const load = async () => {
+                if (!product.colors.find((c) => c.name === color)) {
+                    setColor(product.colors[0]?.name || '')
+                }
+                if (!product.sizes.includes(size)) {
+                    setSize(product.sizes[0] || '')
+                }
+                if (!product.variants.find((v) => v.id === variantId)) {
+                    setVariantId(product.variants[0]?.id || '')
+                }
+
+                const { data: imageUrl, error: messagesErr } = await supabase
+                    .from('design_session_messages')
+                    .select('image_url,image_prompt')
+                    .eq('id', imgId)
+                    .eq('design_session_id', sessionId)
+                    .single()
+
+                if (imageUrl && !messagesErr) {
+                    setSelectedImage(imageUrl)
+                }
             }
-            if (!product.sizes.includes(size)) {
-                setSize(product.sizes[0] || '')
-            }
-            if (!product.variants.find((v) => v.id === variantId)) {
-                setVariantId(product.variants[0]?.id || '')
-            }
+
+            load()
         }
-    }, [productSlug, color, product, size, variantId])
+    }, [productSlug, imgId, color, product, size, variantId])
 
     const variant = useMemo(
         () => product?.variants.find((v) => v.id === variantId) || null,
@@ -275,7 +376,7 @@ export default function Page({ params }: PageProps) {
                                 View Products
                             </Link>
                             <Link
-                                href={`/${lang}/design/s/${sessionId}/select-product`}
+                                href={`/${lang}/design/s/${sessionId}/select-product/${imgId}`}
                                 className="border-input bg-background hover:bg-muted inline-flex items-center rounded-md border px-3 py-2 text-sm"
                             >
                                 Back to Select Product
@@ -297,67 +398,6 @@ export default function Page({ params }: PageProps) {
 
     return (
         <div className="from-background to-muted/30 min-h-screen bg-gradient-to-br">
-            <header className="border-border bg-card/70 supports-[backdrop-filter]:bg-card/60 sticky top-0 z-30 border-b backdrop-blur">
-                <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <Link
-                            href={`/${lang}/design/s/${sessionId}/variations`}
-                            className="hover:text-foreground"
-                        >
-                            Variations
-                        </Link>
-                        <span className="text-border">/</span>
-                        <Link
-                            href={`/${lang}/design/s/${sessionId}/select-product`}
-                            className="hover:text-foreground"
-                        >
-                            Select Product
-                        </Link>
-                        <span className="text-border">/</span>
-                        <span className="text-foreground font-medium">Configure</span>
-                        <span className="text-border">/</span>
-                        <Link
-                            href={`/${lang}/design/s/${sessionId}/approval`}
-                            className="hover:text-foreground"
-                        >
-                            Approval
-                        </Link>
-                    </div>
-                    <nav className="flex items-center gap-2 text-sm">
-                        <Link
-                            href={`/${lang}/products`}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
-                        >
-                            Products
-                        </Link>
-                        <Link
-                            href={`/${lang}/orders`}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
-                        >
-                            Orders
-                        </Link>
-                        <Link
-                            href={`/${lang}/account`}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
-                        >
-                            Account
-                        </Link>
-                        <Link
-                            href={`/${lang}/cart`}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
-                        >
-                            Cart
-                        </Link>
-                        <Link
-                            href={`/${lang}/help`}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-2 py-1"
-                        >
-                            Help
-                        </Link>
-                    </nav>
-                </div>
-            </header>
-
             <main className="mx-auto max-w-6xl px-4 py-8">
                 {!userEmail && (
                     <div className="mb-6">
@@ -386,84 +426,106 @@ export default function Page({ params }: PageProps) {
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {/* Left: Preview */}
-                    <section className="border-border bg-card relative rounded-xl border p-4 shadow-sm">
-                        <div className="mb-3 flex items-center justify-between">
-                            <div>
-                                <h1 className="text-xl font-semibold">{product.name}</h1>
-                                <p className="text-muted-foreground text-sm">
-                                    Session {sessionId.slice(0, 8)} • {productSlug}
-                                </p>
+                    {selectedImage?.image_url && (
+                        <section className="border-border bg-card relative rounded-xl border p-4 shadow-sm">
+                            <div className="mb-3 flex items-center justify-between">
+                                <div>
+                                    <h1 className="text-xl font-semibold">{product.name}</h1>
+                                    <p className="text-muted-foreground text-sm">
+                                        Session {sessionId.slice(0, 8)} • {productSlug}
+                                    </p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Link
+                                        href={`/${lang}/design/s/${sessionId}/variations`}
+                                        className="border-input hover:bg-muted rounded-md border px-3 py-1.5 text-sm"
+                                    >
+                                        Back to Variations
+                                    </Link>
+                                    <Link
+                                        href={`/${lang}/products/${productSlug}`}
+                                        className="border-input hover:bg-muted rounded-md border px-3 py-1.5 text-sm"
+                                    >
+                                        Product details
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="flex gap-2">
-                                <Link
-                                    href={`/${lang}/design/s/${sessionId}/variations`}
-                                    className="border-input hover:bg-muted rounded-md border px-3 py-1.5 text-sm"
-                                >
-                                    Back to Variations
-                                </Link>
-                                <Link
-                                    href={`/${lang}/products/${productSlug}`}
-                                    className="border-input hover:bg-muted rounded-md border px-3 py-1.5 text-sm"
-                                >
-                                    Product details
-                                </Link>
-                            </div>
-                        </div>
 
-                        <div className="border-border bg-background relative overflow-hidden rounded-lg border">
-                            <div
-                                className="aspect-[4/3] w-full"
-                                style={{
-                                    background: `radial-gradient(1200px circle at 20% 0%, ${selectedColorHex}22, transparent 40%), linear-gradient(135deg, ${selectedColorHex}33, transparent)`,
-                                }}
-                            >
-                                <div className="flex h-full w-full items-center justify-center">
-                                    <div className="bg-card/80 text-muted-foreground rounded-md px-4 py-2 text-center text-sm backdrop-blur">
-                                        Interactive preview of your AI design on {product.name}.
-                                        Color: {color}. Size: {size}. Variant: {variant?.name}.
+                            <div className="border-border bg-background relative overflow-hidden rounded-lg border">
+                                <div
+                                    className="aspect-[4/3] w-full"
+                                    title={`Interactive preview of your AI design on ${product.name}.
+Color: ${color}.
+Size: ${size}.
+Variant: ${variant?.name}.`}
+                                    style={{
+                                        background: `radial-gradient(1200px circle at 20% 0%, ${selectedColorHex}22, transparent 40%), linear-gradient(135deg, ${selectedColorHex}33, transparent)`,
+                                    }}
+                                >
+                                    <div className="flex h-full w-full items-center justify-center">
+                                        <img
+                                            src={selectedImage.image_url}
+                                            alt={
+                                                selectedImage?.image_prompt ||
+                                                'Generated image (partial)'
+                                            }
+                                            className="w-full rounded-lg opacity-75 shadow-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="mt-4">
-                            <Carousel className="w-full">
-                                <CarouselContent>
-                                    {product.colors.slice(0, 4).map((c, idx) => (
-                                        <CarouselItem
-                                            key={c.name}
-                                            className="basis-1/2 sm:basis-1/3 md:basis-1/3 lg:basis-1/4"
-                                        >
-                                            <div className="border-border rounded-md border p-2">
-                                                <div
-                                                    className="h-20 w-full rounded"
-                                                    style={{
-                                                        background: `linear-gradient(135deg, ${c.hex}, #ffffff)`,
-                                                    }}
-                                                />
-                                                <div className="text-muted-foreground mt-2 truncate text-xs">
-                                                    Mockup {idx + 1} — {c.name}
+                            <div className="mt-4">
+                                <Carousel className="w-full">
+                                    <CarouselContent>
+                                        {product.colors.map((c, idx) => (
+                                            <CarouselItem
+                                                key={c.name}
+                                                className="basis-1/2 sm:basis-1/3 md:basis-1/3 lg:basis-1/4"
+                                            >
+                                                <div className="border-border rounded-md border p-2">
+                                                    <img
+                                                        src={selectedImage.image_url.replace(
+                                                            '/upload/',
+                                                            '/upload/' +
+                                                                encodeURIComponent(
+                                                                    `e_tint:50:hex:${c.hex}`
+                                                                ) +
+                                                                '/'
+                                                        )}
+                                                        alt={
+                                                            selectedImage?.image_prompt ||
+                                                            'Generated image (partial)'
+                                                        }
+                                                        className="w-full rounded-lg opacity-75 shadow-sm"
+                                                        style={{
+                                                            background: `linear-gradient(135deg, ${c.hex}, #ffffff)`,
+                                                        }}
+                                                    />
+                                                    <div className="text-muted-foreground mt-2 truncate text-xs">
+                                                        Mockup {idx + 1} — {c.name}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselPrevious className="left-2" />
-                                <CarouselNext className="right-2" />
-                            </Carousel>
-                        </div>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious className="left-2" />
+                                    <CarouselNext className="right-2" />
+                                </Carousel>
+                            </div>
 
-                        <div className="text-muted-foreground mt-4 text-xs">
-                            Shipping to South Korea: {pricing.eta}. See{' '}
-                            <Link
-                                href={`/${lang}/help`}
-                                className="hover:text-foreground underline"
-                            >
-                                Help
-                            </Link>
-                            .
-                        </div>
-                    </section>
+                            <div className="text-muted-foreground mt-4 text-xs">
+                                Shipping to South Korea: {pricing.eta}. See{' '}
+                                <Link
+                                    href={`/${lang}/help`}
+                                    className="hover:text-foreground underline"
+                                >
+                                    Help
+                                </Link>
+                                .
+                            </div>
+                        </section>
+                    )}
 
                     {/* Right: Configuration + Pricing */}
                     <section className="border-border bg-card rounded-xl border p-4 shadow-sm">

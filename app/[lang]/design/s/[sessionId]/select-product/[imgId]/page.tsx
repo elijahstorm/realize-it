@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useMemo, useState } from 'react'
 
-type Params = { lang: string; sessionId: string }
+type Params = { lang: string; sessionId: string; imgId: string }
 
 type Category = 'Apparel' | 'Drinkware' | 'Home' | 'Accessories' | 'Stationery'
 
@@ -280,7 +280,7 @@ const PRODUCTS: Product[] = [
 export default function SelectProductPage() {
     const router = useRouter()
     const params = useParams() as unknown as Params
-    const { lang, sessionId } = params
+    const { lang, sessionId, imgId } = params
 
     const [query, setQuery] = useState('')
     const [category, setCategory] = useState<'All' | Category>('All')
@@ -311,53 +311,6 @@ export default function SelectProductPage() {
 
     return (
         <div className="bg-background text-foreground min-h-[calc(100dvh)]">
-            <header className="supports-[backdrop-filter]:bg-background/60 border-border sticky top-0 z-30 border-b backdrop-blur">
-                <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-                    <Link
-                        href={`${base}/design/s/${sessionId}`}
-                        className="text-muted-foreground hover:text-foreground inline-flex items-center text-sm transition-colors"
-                    >
-                        <span aria-hidden>←</span>
-                        <span className="ml-2">Design session</span>
-                    </Link>
-                    <span className="text-muted-foreground">/</span>
-                    <Link
-                        href={`${base}/design/s/${sessionId}/variations`}
-                        className="text-muted-foreground hover:text-foreground text-sm"
-                    >
-                        Variations
-                    </Link>
-                    <span className="text-muted-foreground">/</span>
-                    <span className="text-sm font-medium">Select product</span>
-                    <div className="ml-auto flex items-center gap-3">
-                        <Link
-                            href={`${base}/products`}
-                            className="text-muted-foreground hover:text-foreground text-sm"
-                        >
-                            Catalog
-                        </Link>
-                        <Link
-                            href={`${base}/cart`}
-                            className="text-muted-foreground hover:text-foreground text-sm"
-                        >
-                            Cart
-                        </Link>
-                        <Link
-                            href={`${base}/account`}
-                            className="text-muted-foreground hover:text-foreground text-sm"
-                        >
-                            Account
-                        </Link>
-                        <Link
-                            href={`${base}/help`}
-                            className="text-muted-foreground hover:text-foreground text-sm"
-                        >
-                            Help
-                        </Link>
-                    </div>
-                </div>
-            </header>
-
             <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                     <div>
@@ -454,7 +407,7 @@ export default function SelectProductPage() {
                         className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     >
                         {filtered.map((p) => {
-                            const href = `${base}/design/s/${sessionId}/configure/${p.slug}`
+                            const href = `${base}/design/s/${sessionId}/configure/${p.slug}/${imgId}`
                             const learnHref = `${base}/products/${p.slug}`
                             return (
                                 <li key={p.slug} className="group">

@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import { supabaseBrowser } from '@/utils/supabase/client-browser'
 import { cn } from '@/utils/utils'
-import { Send, Sparkles, Loader2, UserRound } from 'lucide-react'
+import { Send, Sparkles, Loader2, UserRound, Download, Shirt } from 'lucide-react'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 
@@ -529,7 +529,7 @@ What kind of design are you looking to create?`,
                                                         <div className="space-y-2">
                                                             <div className="relative">
                                                                 <img
-                                                                    src={`data:image/png;base64,${message.image_data}`}
+                                                                    src={message.image_url}
                                                                     alt={
                                                                         message.image_prompt ||
                                                                         'Generated image (partial)'
@@ -564,7 +564,7 @@ What kind of design are you looking to create?`,
                                                             />
                                                             <div className="flex gap-2">
                                                                 <button
-                                                                    className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-200"
+                                                                    className="flex cursor-pointer items-center gap-1 rounded-md bg-gray-100 px-3 py-2 text-sm text-gray-700 shadow transition hover:bg-gray-200 disabled:cursor-not-allowed"
                                                                     onClick={() => {
                                                                         const link =
                                                                             document.createElement(
@@ -576,11 +576,17 @@ What kind of design are you looking to create?`,
                                                                         link.click()
                                                                     }}
                                                                 >
+                                                                    <Download size={16} />
                                                                     Download
                                                                 </button>
-                                                                <button className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 transition-colors hover:bg-gray-200">
+
+                                                                <Link
+                                                                    href={`/${lang}/design/s/${sessionId}/select-product/${message.id}`}
+                                                                    className="flex cursor-pointer items-center gap-1 rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-700 shadow transition hover:bg-blue-200 disabled:cursor-not-allowed"
+                                                                >
+                                                                    <Shirt size={16} />
                                                                     Create Product
-                                                                </button>
+                                                                </Link>
                                                             </div>
                                                         </div>
                                                     )}

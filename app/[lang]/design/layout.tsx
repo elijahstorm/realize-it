@@ -24,6 +24,7 @@ function useDesignPathContext(paramsLang?: string) {
 
     let sessionId: string | undefined
     let productSlug: string | undefined
+    let imgId: string | undefined
     let current: StepKey = 'prompt'
 
     const sIndex = segments.indexOf('s')
@@ -37,6 +38,7 @@ function useDesignPathContext(paramsLang?: string) {
         current = 'configure'
         const cIdx = segments.indexOf('configure')
         if (segments[cIdx + 1]) productSlug = segments[cIdx + 1]
+        if (segments[cIdx + 2]) imgId = segments[cIdx + 2]
     } else if (segments.includes('select-product')) {
         current = 'select'
     } else if (segments.includes('variations') || (sessionId && isInDesign)) {
@@ -45,26 +47,28 @@ function useDesignPathContext(paramsLang?: string) {
         current = 'prompt'
     }
 
-    return { pathname, segments, lang, sessionId, productSlug, current }
+    return { pathname, segments, lang, sessionId, productSlug, imgId, current }
 }
 
 function buildHref(
     lang: string,
     sessionId: string | undefined,
     productSlug: string | undefined,
+    imgId: string | undefined,
     step: StepKey
 ) {
     switch (step) {
         case 'prompt':
             return `/${lang}/design`
         case 'options':
-            return sessionId ? `/${lang}/design/s/${sessionId}/variations` : undefined
+            return sessionId ? `/${lang}/design/s/${sessionId}` : undefined
         case 'select':
-            return sessionId ? `/${lang}/design/s/${sessionId}/select-product` : undefined
+            return sessionId ? `/${lang}/design/s/${sessionId}/select-product/${imgId}` : undefined
         case 'configure': {
             if (!sessionId) return undefined
-            if (productSlug) return `/${lang}/design/s/${sessionId}/configure/${productSlug}`
-            return `/${lang}/design/s/${sessionId}/select-product`
+            if (productSlug)
+                return `/${lang}/design/s/${sessionId}/configure/${productSlug}/${imgId}`
+            return `/${lang}/design/s/${sessionId}/select-product/${imgId}`
         }
         case 'approval':
             return sessionId ? `/${lang}/design/s/${sessionId}/approval` : undefined
@@ -90,12 +94,13 @@ function ChevronRight({ className }: { className?: string }) {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    const { lang, sessionId, productSlug, current } = useDesignPathContext(
+    const { lang, sessionId, productSlug, current, imgId } = useDesignPathContext(
         useParams().lang as 'en' | 'ko'
     )
     const currentIndex = useMemo(() => STEPS.findIndex((s) => s.key === current), [current])
 
     const [knownProductSlug, setKnownProductSlug] = useState<string | undefined>(undefined)
+    const [knownImgId, setKnownImgId] = useState<string | undefined>(undefined)
     const [allowedIndex, setAllowedIndex] = useState<number>(currentIndex)
 
     // Persist and retrieve per-session progress + selected product
@@ -106,6 +111,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }
         const progressKey = `design:${sessionId}:progress`
         const productKey = `design:${sessionId}:productSlug`
+        const imgKey = `design:${sessionId}:imgId`
 
         try {
             const stored = localStorage.getItem(progressKey)
@@ -124,10 +130,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 const storedSlug = localStorage.getItem(productKey) || undefined
                 if (storedSlug) setKnownProductSlug(storedSlug)
             }
+            if (imgId) {
+                localStorage.setItem(imgKey, imgId)
+                setKnownImgId(imgId)
+            } else {
+                const storedSlug = localStorage.getItem(imgKey) || undefined
+                if (storedSlug) setKnownImgId(storedSlug)
+            }
         } catch {
             setAllowedIndex((idx) => Math.max(idx, currentIndex))
         }
-    }, [sessionId, currentIndex, productSlug])
+    }, [sessionId, currentIndex, productSlug, imgId])
 
     const progressPercent = useMemo(() => {
         const clamped = Math.max(0, Math.min(allowedIndex, STEPS.length - 1))
@@ -211,7 +224,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         {STEPS.map((step, idx) => {
                             const isCurrent = idx === currentIndex
                             const isComplete = idx < currentIndex
-                            const href = buildHref(lang, sessionId, knownProductSlug, step.key)
+                            const href = buildHref(
+                                lang,
+                                sessionId,
+                                knownProductSlug,
+                                knownImgId,
+                                step.key
+                            )
                             const isClickable = typeof href === 'string' && idx <= allowedIndex
                             return (
                                 <li key={step.key} className="min-w-max flex-1">
@@ -224,7 +243,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                                     ? 'bg-primary text-primary-foreground shadow-sm'
                                                     : isComplete
                                                       ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                                      : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground border-border border border-dashed'
+                                                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground border-secondary bg-secondary/10 border border-dashed'
                                             )}
                                             aria-current={isCurrent ? 'step' : undefined}
                                         >
