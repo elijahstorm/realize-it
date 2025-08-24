@@ -126,6 +126,7 @@ What kind of design are you looking to create?`,
             if (!content.trim() || isStreaming) return
 
             const userMessage: ChatMessage = {
+                id: `user-${Date.now()}`,
                 role: 'user',
                 content: content.trim(),
                 timestamp: new Date(),
@@ -248,13 +249,57 @@ What kind of design are you looking to create?`,
                                         .select()
                                         .single()
 
+                                    assistantMessage.image_status = 'complete'
+                                    assistantMessage.image_data = data.image_data
+                                    assistantMessage.image_url = data.image_url
+                                    assistantMessage.image_prompt = data.image_prompt
+
                                     if (error) console.error(error)
 
                                     setMessages((prev) =>
                                         prev.map((m) =>
-                                            m.id === assistantMessage.id ? assistantMessageData : m
+                                            m.id === assistantMessage.id
+                                                ? {
+                                                      ...assistantMessageData,
+                                                      timestamp: new Date(
+                                                          assistantMessageData.created_at
+                                                      ),
+                                                  }
+                                                : m
                                         )
                                     )
+                                } else if (data.image_url) {
+                                    const { data: assistantMessageData, error } = await supabase
+                                        .from('design_session_messages')
+                                        .insert({
+                                            design_session_id: sessionId,
+                                            role: 'assistant',
+                                            content: assistantMessage.content || null,
+                                            reasoning: assistantMessage.reasoning || null,
+                                            image_status: 'complete',
+                                            image_data: null,
+                                            image_url: data.image_url || null,
+                                            image_prompt: data.image_prompt || null,
+                                            partial_index: null,
+                                        })
+                                        .select()
+                                        .single()
+
+                                    if (error) console.error(error)
+
+                                    setMessages((prev) =>
+                                        prev.map((m) =>
+                                            m.id === assistantMessage.id
+                                                ? {
+                                                      ...assistantMessageData,
+                                                      timestamp: new Date(
+                                                          assistantMessageData.created_at
+                                                      ),
+                                                  }
+                                                : m
+                                        )
+                                    )
+                                    break
                                 }
                                 // Handle image generation status
                                 else if (data.image_status) {
@@ -294,9 +339,6 @@ What kind of design are you looking to create?`,
                                             assistantMessage.image_url = data.image_url
                                             assistantMessage.image_prompt = data.image_prompt
                                             delete assistantMessage.partial_index
-
-                                            if (error) console.error(error)
-
                                             setMessages((prev) =>
                                                 prev.map((m) =>
                                                     m.id === assistantMessage.id
