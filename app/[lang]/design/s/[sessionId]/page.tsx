@@ -155,23 +155,26 @@ What kind of design are you looking to create?`,
 
                 if (error) console.error(error)
 
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        messages: [...messages, userMessage].map((m) => ({
-                            role: m.role,
-                            content: m.content,
-                        })),
-                        context: {
-                            sessionId,
-                            type: 'design_assistant',
-                            prompt: session?.prompt,
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_GEN_ENDPOINT}/api/gen-image`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
                         },
-                    }),
-                })
+                        body: JSON.stringify({
+                            messages: [...messages, userMessage].map((m) => ({
+                                role: m.role,
+                                content: m.content,
+                            })),
+                            context: {
+                                sessionId,
+                                type: 'design_assistant',
+                                prompt: session?.prompt,
+                            },
+                        }),
+                    }
+                )
 
                 if (!response.ok) throw new Error('Failed to send message')
 
