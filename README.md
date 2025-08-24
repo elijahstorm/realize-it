@@ -2,9 +2,9 @@
 
 ### Links
 
-[https://realize-it.elijahstorm.com/](https://realize-it.elijahstorm.com/)
-[frontend github repo](https://github.com/elijahstorm/realize-it)
-[backend github repo](https://github.com/elijahstorm/realize-it-backend)
+- [https://realize-it.elijahstorm.com/](https://realize-it.elijahstorm.com/)
+- [frontend github repo](https://github.com/elijahstorm/realize-it)
+- [backend github repo](https://github.com/elijahstorm/realize-it-backend)
 
 ### Our Solution: RealizeIt
 
