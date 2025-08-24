@@ -3,7 +3,8 @@
 ### Links
 
 [https://realize-it.elijahstorm.com/](https://realize-it.elijahstorm.com/)
-[github repo](https://github.com/elijahstorm/realize-it)
+[frontend github repo](https://github.com/elijahstorm/realize-it)
+[backend github repo](https://github.com/elijahstorm/realize-it-backend)
 
 ### Our Solution: RealizeIt
 
