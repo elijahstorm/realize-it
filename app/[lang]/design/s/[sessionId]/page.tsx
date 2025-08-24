@@ -235,21 +235,18 @@ What kind of design are you looking to create?`,
 
                                     const { error } = await supabase
                                         .from('design_session_messages')
-                                        .upsert(
-                                            {
-                                                id: possiblyIncompleteMessage?.id,
-                                                design_session_id: sessionId,
-                                                role: 'assistant',
-                                                content: data.content,
-                                                reasoning: data.reasoning || null,
-                                                image_status: 'complete',
-                                                image_data: null,
-                                                image_url: data.image_url || null,
-                                                image_prompt: data.image_prompt || null,
-                                                partial_index: null,
-                                            },
-                                            { onConflict: 'id' }
-                                        )
+                                        .update({
+                                            design_session_id: sessionId,
+                                            role: 'assistant',
+                                            content: data.content,
+                                            reasoning: data.reasoning || null,
+                                            image_status: 'complete',
+                                            image_data: null,
+                                            image_url: data.image_url || null,
+                                            image_prompt: data.image_prompt || null,
+                                            partial_index: null,
+                                        })
+                                        .eq('id', possiblyIncompleteMessage.id)
 
                                     if (error) console.error(error)
 
