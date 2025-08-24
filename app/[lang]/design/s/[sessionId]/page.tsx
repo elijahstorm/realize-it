@@ -126,18 +126,17 @@ What kind of design are you looking to create?`,
             if (!content.trim() || isStreaming) return
 
             const userMessage: ChatMessage = {
-                id: `user-${Date.now()}`,
                 role: 'user',
                 content: content.trim(),
                 timestamp: new Date(),
-            }
+            } as ChatMessage
 
             setMessages((prev) => [...prev, userMessage])
             setInputValue('')
             setIsStreaming(true)
 
             try {
-                const { data: possiblyIncompleteMessage, error } = await supabase
+                const { error } = await supabase
                     .from('design_session_messages')
                     .insert({
                         design_session_id: sessionId,
@@ -186,7 +185,7 @@ What kind of design are you looking to create?`,
                     role: 'assistant',
                     content: '',
                     timestamp: new Date(),
-                }
+                } as ChatMessage
 
                 setMessages((prev) => [...prev, assistantMessage])
 
@@ -233,9 +232,9 @@ What kind of design are you looking to create?`,
                                         assistantMessage.reasoning = data.reasoning
                                     }
 
-                                    const { error } = await supabase
+                                    const { data: assistantMessageData, error } = await supabase
                                         .from('design_session_messages')
-                                        .update({
+                                        .insert({
                                             design_session_id: sessionId,
                                             role: 'assistant',
                                             content: data.content,
@@ -246,15 +245,14 @@ What kind of design are you looking to create?`,
                                             image_prompt: data.image_prompt || null,
                                             partial_index: null,
                                         })
-                                        .eq('id', possiblyIncompleteMessage.id)
+                                        .select()
+                                        .single()
 
                                     if (error) console.error(error)
 
                                     setMessages((prev) =>
                                         prev.map((m) =>
-                                            m.id === assistantMessage.id
-                                                ? { ...assistantMessage }
-                                                : m
+                                            m.id === assistantMessage.id ? assistantMessageData : m
                                         )
                                     )
                                 }
@@ -296,20 +294,6 @@ What kind of design are you looking to create?`,
                                             assistantMessage.image_url = data.image_url
                                             assistantMessage.image_prompt = data.image_prompt
                                             delete assistantMessage.partial_index
-
-                                            const { error } = await supabase
-                                                .from('design_session_messages')
-                                                .insert({
-                                                    design_session_id: sessionId,
-                                                    role: 'assistant',
-                                                    content: data.content,
-                                                    reasoning: data.reasoning || null,
-                                                    image_status: 'complete',
-                                                    image_data: null,
-                                                    image_url: data.image_url || null,
-                                                    image_prompt: data.image_prompt || null,
-                                                    partial_index: null,
-                                                })
 
                                             if (error) console.error(error)
 
@@ -529,12 +513,12 @@ What kind of design are you looking to create?`,
                                                         <div className="space-y-2">
                                                             <div className="relative">
                                                                 <img
-                                                                    src={message.image_url}
+                                                                    src={`data:image/png;base64,${message.image_data}`}
                                                                     alt={
                                                                         message.image_prompt ||
-                                                                        'Generated image (partial)'
+                                                                        'Generated image'
                                                                     }
-                                                                    className="w-full rounded-lg opacity-75 shadow-sm"
+                                                                    className="w-full rounded-lg shadow-sm"
                                                                 />
                                                                 <div className="absolute top-2 right-2 flex items-center gap-1 rounded bg-blue-600/90 px-2 py-1 text-xs text-white">
                                                                     <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
@@ -552,15 +536,15 @@ What kind of design are you looking to create?`,
                                                     )}
 
                                                 {message.image_status === 'complete' &&
-                                                    message.image_data && (
+                                                    message.image_url && (
                                                         <div className="space-y-2">
                                                             <img
-                                                                src={`data:image/png;base64,${message.image_data}`}
+                                                                src={message.image_url}
                                                                 alt={
                                                                     message.image_prompt ||
-                                                                    'Generated image'
+                                                                    'Generated image (partial)'
                                                                 }
-                                                                className="w-full rounded-lg shadow-sm"
+                                                                className="w-full rounded-lg opacity-75 shadow-sm"
                                                             />
                                                             <div className="flex gap-2">
                                                                 <button
@@ -570,7 +554,8 @@ What kind of design are you looking to create?`,
                                                                             document.createElement(
                                                                                 'a'
                                                                             )
-                                                                        link.href = `data:image/png;base64,${message.image_data}`
+                                                                        link.href =
+                                                                            message.image_url!
                                                                         link.download =
                                                                             'generated-image.png'
                                                                         link.click()
